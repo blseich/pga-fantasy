@@ -75,16 +75,16 @@ export default async function Home() {
                 Overall
               </div>
           </div>
-          <div className="grid grid-cols-[1fr_50%_1fr_1fr] text-center gap-0.5 bg-emerald-950 [&>div]:bg-white [&>div:last-of-type]:bg-gray-300 rounded-b-2xl border-2 border-emerald-950 overflow-hidden">
+          <div className="grid grid-cols-[1fr_50%_1fr_1fr] text-center gap-0.5 bg-emerald-950 rounded-b-2xl border-2 border-emerald-950 overflow-hidden">
               {Object
                 .values(pick.picks)
                 .sort((a_id, b_id) => getScoreToPar(golfersIdMap[a_id]) - getScoreToPar(golfersIdMap[b_id]))
-                .map((id) => (
+                .map((id, i) => (
                   <>
-                    <div className="p-2 text-ellipsis overflow-hidden grid items-center justify-center">{golfersIdMap[id].status.position.displayName}</div>
-                    <div className="p-2 text-ellipsis overflow-hidden grid items-center justify-center">{golfersIdMap[id].athlete.displayName}</div>
-                    <div className="p-2 text-ellipsis overflow-hidden grid items-center justify-center">{golfersIdMap[id].status.todayDetail || golfersIdMap[id].status.detail}</div>
-                    <div className="p-2 text-ellipsis overflow-hidden grid items-center justify-center">{golfersIdMap[id].statistics.find((stat: { name: string }) => stat.name === 'scoreToPar').displayValue}</div>
+                    <div className={`p-2 text-ellipsis overflow-hidden grid items-center justify-center ${i === 3 ? 'bg-gray-300' : 'bg-white'}`}>{golfersIdMap[id].status.position.displayName}</div>
+                    <div className={`p-2 text-ellipsis overflow-hidden grid items-center justify-center ${i === 3 ? 'bg-gray-300' : 'bg-white'}`}>{golfersIdMap[id].athlete.displayName}</div>
+                    <div className={`p-2 text-ellipsis overflow-hidden grid items-center justify-center ${i === 3 ? 'bg-gray-300' : 'bg-white'}`}>{golfersIdMap[id].status.todayDetail || golfersIdMap[id].status.detail}</div>
+                    <div className={`p-2 text-ellipsis overflow-hidden grid items-center justify-center ${i === 3 ? 'bg-gray-300' : 'bg-white'}`}>{golfersIdMap[id].statistics.find((stat: { name: string }) => stat.name === 'scoreToPar').displayValue}</div>
                   </>
               ))}
           </div>
