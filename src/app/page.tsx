@@ -38,7 +38,7 @@ export default async function Home() {
         ))
         .map((pick, i) => (
         <div className="mb-8 max-w-2xl mx-auto" key={`${pick.id}-${pick.name.replace(' ', '-')}`}>
-          <div className='flex gap-4 p-4 bg-emerald-400 text-black font-bold rounded-t-2xl'>
+          <div className='flex gap-4 p-4 bg-emerald-400 text-black font-bold rounded-t-2xl border-2 border-emerald-950'>
             <div className="shrink-0 grow-0">{i + 1}</div>
             <div className='text-center flex-grow'>{pick.name}</div>
             <div className="shrink-0 grow-0">Overall: {parseScore(Object.values(pick.picks).reduce((acc, id) => acc + scoreToInt(golfersIdMap[id].statistics.find((stat: { name: string }) => stat.name === 'scoreToPar').displayValue), 0))}</div>
