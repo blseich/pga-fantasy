@@ -14,7 +14,7 @@ const parseScore = (score: number) => {
 }
 
 export default async function Home() {
-  const result = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703511');
+  const result = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703511', {cache: 'no-store'});
   const render = await result.json();
 
   const golfers = render.events[0].competitions[0].competitors;
