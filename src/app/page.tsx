@@ -23,6 +23,13 @@ type Picker = {
 const getScoreToPar = (player: Player) =>
   player.statistics.find((stat) => stat.name === 'scoreToPar')?.value || 0;
 
+const displayScoreToPar = (score: number) => {
+  if (score === 0) return "E";
+  if (score > 0) return `+${score}`;
+  if (score < 0) return `${score}`;
+}
+
+
 export default async function Home() {
   const result = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703511', {cache: 'no-store'});
   const render = await result.json();
@@ -52,7 +59,7 @@ export default async function Home() {
           <div className='flex gap-4 p-4 bg-emerald-400 text-black font-bold rounded-t-2xl border-2 border-emerald-950'>
             <div className="shrink-0 grow-0">{i + 1}</div>
             <div className='text-center flex-grow'>{pick.name}</div>
-            <div className="shrink-0 grow-0">Overall: {calcOverallScore(pick.picks)}</div>
+            <div className="shrink-0 grow-0">Overall: {displayScoreToPar(calcOverallScore(pick.picks))}</div>
           </div>
           <div className="grid grid-cols-[1fr_50%_1fr_1fr] text-center gap-0.5 bg-emerald-950 border-2 border-emerald-950">
             <div className="bg-emerald-800 text-white">
