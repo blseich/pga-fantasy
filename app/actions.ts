@@ -8,6 +8,9 @@ import { redirect } from "next/navigation";
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const confirm_password = formData.get("confirm_password")?.toString();
+  const first_name = formData.get("first_name")?.toString();
+  const last_name = formData.get("last_name")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
@@ -19,11 +22,23 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { error } = await supabase.auth.signUp({
+  if (password !== confirm_password) {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      "Password and Confirm Password do not match"
+    );
+  }
+
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
+      data: {
+        first_name,
+        last_name,
+      }
     },
   });
 
@@ -31,6 +46,10 @@ export const signUpAction = async (formData: FormData) => {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
+    console.log('🔎 data user id -', data.user?.id);
+    console.log({ first_name, last_name });
+    const { data: profileData } = await supabase.from('profiles').select().eq('id', data.user?.id);
+    console.log(profileData);
     return encodedRedirect(
       "success",
       "/sign-up",
