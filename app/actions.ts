@@ -30,7 +30,7 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { data, error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -46,10 +46,6 @@ export const signUpAction = async (formData: FormData) => {
     console.error(error.code + " " + error.message);
     return encodedRedirect("error", "/sign-up", error.message);
   } else {
-    console.log('🔎 data user id -', data.user?.id);
-    console.log({ first_name, last_name });
-    const { data: profileData } = await supabase.from('profiles').select().eq('id', data.user?.id);
-    console.log(profileData);
     return encodedRedirect(
       "success",
       "/sign-up",
@@ -72,7 +68,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/protected");
+  return redirect("/");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {

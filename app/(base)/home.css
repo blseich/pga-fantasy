@@ -1,0 +1,13 @@
+.card {
+    opacity: 1;
+    transform: translateY(0);
+    transition-property: width, padding, opacity, transform;
+    transition-duration: 200ms, 200ms, 1s;
+    transition-delay: 50ms, 50ms, calc(200ms * var(--i));
+    transition-timing-function: ease-in-out, ease-in-out, ease-out;
+
+    @starting-style {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
