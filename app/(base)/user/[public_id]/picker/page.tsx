@@ -20,7 +20,7 @@ export default async function PickerPage({ searchParams, params }: { searchParam
         const supabase = await createClient();
     const { data: profileData, error: profileError } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
     const { data: rosterData, error: rosterError } = await supabase.from('picks').select('dg_rank').eq('user_id', profileData?.[0].user_id || "").eq('rank_bucket', bucket);
-    const selectedDgRank = rosterData?.[0].dg_rank;
+    const selectedDgRank = rosterData?.[0]?.dg_rank;
     console.log(selectedDgRank)
     const picks = await getGolferRanks(bucket);
     const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
@@ -44,7 +44,7 @@ export default async function PickerPage({ searchParams, params }: { searchParam
                                 <div>WGR:</div><div>{pick.owgr_rank}</div>
                             </div>
                         </div>
-                        {(isPickable && !isPicked) && <PickButton golfer_id={golfer.id} bucket={bucket} rank={pick.dg_rank} redirectHref={`/user/${public_id}/roster`}/>}
+                        {(isPickable && !isPicked) && <PickButton golfer_id={golfer.id} bucket={bucket} rank={pick.dg_rank} redirectHref={`/user/${public_id}`}/>}
                         {isPicked && (<div className="ml-auto text-green-500 aspect-square h-[40px] grid place-content-center font-bold">PICKED</div>)}
                         {!isPickable && (<div className="ml-auto text-red-500 aspect-square h-[40px] grid place-content-center font-bold">OUT</div>)}
                     </div>

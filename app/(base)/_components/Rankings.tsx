@@ -2,55 +2,49 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { Tables } from "@/utils/supabase/database.types";
+import { UserWithPickDetails } from '../page';
 
-type User = {
-    public_id: string | null,
-    first_name: string | null,
-    last_name: string | null,
-}
 
-export default function Rankings({ users }: { users: User[] }) {
-    const [activeCard, setActiveCard] = useState(0);
-    return users.map((user, i) => (
+const RankHeading = ({ first_name, last_name, rank, score }: UserWithPickDetails & { rank: number }) => (
+    <div className="w-full flex items-center gap-4">
+        <div className="w-8 bg-brand-blue text-center text-black font-bold aspect-square grid place-items-center">{rank}</div>
+        <div>{first_name} {last_name}</div>
+        <div className="h-[1px] grow bg-brand-blue"/>
+        <div className="text-brand-green">{score.displayValue}</div>
+    </div>
+);
+
+const GolferScore = ({ golfer, score, unscored }: UserWithPickDetails['picks'][0] & { unscored?: boolean }) => (
+    <div className={`p-2 w-full flex gap-2 items-center relative ${unscored ? 'opacity-50' : 'border-b-2 border-b-gray-500'}`}>
+        <Image src={golfer.headshot} width="65" height="47" alt="Scottie Scheffler" />
+        <div className="text-left">
+            <div className="text-xs">{golfer.first_name}</div>
+            <div className="">{golfer.last_name}</div>
+        </div>
+        <div className="ml-auto grid grid-rows-[auto_auto] grid-cols-[auto_auto] text-right gap-x-2">
+            <div className="text-xs">Today:</div>
+            <div className="text-xs">{score.today}</div>
+            <div className="">Overall:</div>
+            <div className="">{score.overall.displayValue}</div>
+        </div>
+    </div>
+);
+
+export default function Rankings({ users }: { users: UserWithPickDetails[] }) {
+    const [activeCard, setActiveCard] = useState<number | null>(0);
+    return users.sort((userA, userB) => userA.score.value - userB.score.value).map((user, i) => (
+        // <Rank user_id={user.user_id} />
         <button
             key={user.public_id} style={{["--i" as any]: i}}
-            className={`card border border-foreground/10 ${activeCard === i ? 'w-full p-4' : 'w-10/12 p-2'}`}
-            onClick={() => setActiveCard(i)}
+            className={`card  border border-foreground/10 ${activeCard === i ? 'w-full p-4' : 'w-10/12 p-2'}`}
+            onClick={() => activeCard === i ? setActiveCard(null) : setActiveCard(i)}
         >
-            <div className="w-full flex items-center gap-4">
-                <div>{user.first_name} {user.last_name}</div>
-                <div className="h-[1px] grow bg-brand-blue"/>
-                <div className="text-brand-green">-3</div>
-            </div>
-            <div className={`${activeCard === i ? 'max-h-60' : 'max-h-0'} transition-all duration-500 ease-out bg-black overflow-hidden`}>
-                <div className="p-2 border-b-2 border-b-gray-500 w-full flex gap-2 items-center">
-                    <Image src="https://www.espn.com/i/headshots/golf/players/full/9478.png" width="65" height="47" alt="Scottie Scheffler" />
-                    <div className="text-left">
-                        <div className="text-xs">Scottie</div>
-                        <div className="">Scheffler</div>
-                    </div>
-                    <div className="ml-auto grid grid-rows-[auto_auto] grid-cols-[auto_auto] text-right gap-x-2">
-                        <div className="text-xs">Today:</div>
-                        <div className="text-xs">12:45</div>
-                        <div className="">Overall:</div>
-                        <div className="">-3</div>
-                    </div>
-                </div>
-                <div className="p-2 border-b-2 border-b-gray-500 w-full flex gap-2 items-center">
-                    <Image src="https://www.espn.com/i/headshots/golf/players/full/4404992.png" width="65" height="47" alt="Scottie Scheffler" />
-                    <div className="text-left">
-                        <div className="text-xs">Ben</div>
-                        <div className="">Griffin</div>
-                    </div>
-                    <div className="ml-auto grid grid-rows-[auto_auto] grid-cols-[auto_auto] text-right gap-x-2">
-                        <div className="text-xs">Today:</div>
-                        <div className="text-xs">+3 (2)</div>
-                        <div className="">Overall:</div>
-                        <div className="">-3</div>
-                    </div>
-                </div>
-                <div className="h-12 border-b-2 border-b-gray-500 w-full"/>
-                <div className="h-12 border-b-2 border-b-gray-500 w-full"/>
+            <RankHeading {...user} rank={i+1} />
+            <div className={`${activeCard === i ? 'max-h-80' : 'max-h-0'} transition-all duration-500 ease-out bg-black overflow-hidden`}>
+                {user.picks.map((pick, i) => (
+                    <GolferScore {...pick} unscored={i === user.picks.length - 1}/>
+                ))}
             </div>
         </button>
     ));

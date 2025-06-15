@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { Params } from "next/dist/server/request/params";
-import Link from "next/link";
+import Roster from './_components/Roster';
 
 export default async function UserPage({ params }: { params: Params }) {
     const { public_id } = await params;
@@ -14,7 +14,7 @@ export default async function UserPage({ params }: { params: Params }) {
             <h1>{loggedInUser?.id === user.user_id ? 'Current User!' : 'Not Current User'}</h1>
             <h1>{user.first_name}</h1>
             <h1>{user.last_name}</h1>
-            <Link href={`/user/${public_id}/roster`}>View Roster</Link>
+            <Roster public_id={public_id} />
         </>
     )
 }
