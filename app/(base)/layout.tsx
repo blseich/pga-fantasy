@@ -33,8 +33,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
-          <main className="min-h-screen flex flex-col items-center">
-            <div className="flex-1 w-full flex flex-col gap-20 items-center">
+          <main className="min-h-screen">
               <nav className="w-full border-b border-b-foreground/10 py-2 px-4 flex items-center justify-center">
                 <button className="mr-auto text-gray-500">
                   <SquareMenu className="h-10 w-10" />
@@ -56,7 +55,6 @@ export default async function RootLayout({
                   Built by Seich
                 </p>
               </footer>
-            </div>
           </main>
       </body>
     </html>

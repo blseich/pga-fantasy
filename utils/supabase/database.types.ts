@@ -34,6 +34,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      picks: {
+        Row: {
+          created_at: string
+          golfer_id: string | null
+          id: string
+          rank_bucket: string | null
+        }
+        Insert: {
+          created_at?: string
+          golfer_id?: string | null
+          id: string
+          rank_bucket?: string | null
+        }
+        Update: {
+          created_at?: string
+          golfer_id?: string | null
+          id?: string
+          rank_bucket?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null

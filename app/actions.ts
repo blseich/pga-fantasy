@@ -147,3 +147,11 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+export const upsertPick = async (golfer_id: string, bucket: string) => {
+  const supabase = await createClient();
+  const { data: { user }} = await supabase.auth.getUser();
+  if (user) {
+    await supabase.from('picks').upsert({ id: user.id, golfer_id, rank_bucket: bucket}, { onConflict: 'id,rank_bucket'});
+  }
+}

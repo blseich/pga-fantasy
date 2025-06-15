@@ -2,7 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [new URL("https://www.espn.com/i/headshots/golf/players/full/**")]
+    remotePatterns: [
+      new URL("https://www.espn.com/i/headshots/golf/players/full/**"),
+      new URL("https://a.espncdn.com/i/headshots/golf/players/full/**")
+    ]
   },
   webpack(config) {
     const fileLoaderRule = config.module.rules.find((rule) =>

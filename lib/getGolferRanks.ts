@@ -5,11 +5,33 @@ const rankingsPath = path.join(process.cwd(), 'data/datagolf_rankings_current.cs
 
 let cachedData: any = null;
 
-export async function  getGolferRanks() {
-  if (cachedData) return cachedData;
+type DataGolferRank = {
+  player_name: string;
+  primary_tour: string;
+  dg_rank: string;
+  dg_change: string;
+  owgr_rank: string;
+  owgr_change: string;
+  dg_index: string;
+}
 
-  const records = await csv().fromFile(rankingsPath);
+export async function  getGolferRanks(bucket:string = 'all'): Promise<DataGolferRank[]> {
+  if (cachedData) {
+    return cachedData[bucket];
+  }
 
-  cachedData = records;
-  return records;
+  const allRecords = await csv().fromFile(rankingsPath);
+  const oneToTen = allRecords.slice(0, 10);
+  const elevenToTwenty = allRecords.slice(10, 20);
+  const twentyOneToForty = allRecords.slice(20, 40);
+  const fortyPlus = allRecords.slice(40);
+
+  cachedData = {
+    '1-10': oneToTen,
+    '11-20': elevenToTwenty,
+    '21-40': twentyOneToForty,
+    '40': fortyPlus,
+    'all': allRecords,
+  };
+  return cachedData[bucket];
 }
