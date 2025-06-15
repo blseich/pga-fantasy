@@ -50,12 +50,12 @@ export default async function RootLayout({
                 </Link>
               </nav>
               {children}
-              <footer className="w-full flex items-center justify-center border-t py-2 px-4">
-                <p>
-                  Built by Seich
-                </p>
-              </footer>
           </main>
+          <footer className="w-full flex items-center justify-center border-t py-2 px-4">
+            <p>
+              Built by Seich
+            </p>
+          </footer>
       </body>
     </html>
   );

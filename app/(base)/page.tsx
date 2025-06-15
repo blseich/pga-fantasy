@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import './home.css';
 import Rankings from './_components/Rankings';
 import { Tables } from '@/utils/supabase/database.types';
+import { Trophy } from 'lucide-react';
 
 type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] }
 type PickWithDetails = Tables<'picks'> & {
@@ -69,8 +70,15 @@ export default async function Home() {
   const rankings = generateRankings(users || [], event.events[0]);
   console.log(rankings[0].picks);
   return (
-    <div className="w-full max-w-screen-md p-4 flex flex-col gap-4 items-center">
-      <Rankings users={rankings || []} event={event}/>
-    </div>
+    <>
+      <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
+        <Trophy className="h-[36px] w-[36px] text-yellow-300"/>
+        <h1 className="text-4xl font-bold">{event.events[0].name}</h1>
+        <h2 className="text-brand-blue">{event.events[0].courses[0].name}</h2>
+      </div>
+      <div className="w-full max-w-screen-md p-4 flex flex-col gap-4 items-center">
+        <Rankings users={rankings || []} event={event}/>
+      </div>
+    </>
   );
 }
