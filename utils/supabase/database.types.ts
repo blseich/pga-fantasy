@@ -37,21 +37,24 @@ export type Database = {
       picks: {
         Row: {
           created_at: string
-          golfer_id: string | null
+          dg_rank: string
+          golfer_id: string
           id: string
-          rank_bucket: string | null
+          rank_bucket: string
         }
         Insert: {
           created_at?: string
-          golfer_id?: string | null
+          dg_rank: string
+          golfer_id: string
           id: string
-          rank_bucket?: string | null
+          rank_bucket: string
         }
         Update: {
           created_at?: string
-          golfer_id?: string | null
+          dg_rank?: string
+          golfer_id?: string
           id?: string
-          rank_bucket?: string | null
+          rank_bucket?: string
         }
         Relationships: []
       }

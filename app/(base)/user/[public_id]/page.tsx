@@ -2,10 +2,10 @@ import { createClient } from "@/utils/supabase/server";
 import { Params } from "next/dist/server/request/params";
 
 export default async function UserPage({ params }: { params: Params }) {
-    const { profile_id } = await params;
+    const { public_id } = await params;
     const supabase = await createClient();
     const { data: { user: loggedInUser }} = await supabase.auth.getUser();
-    const { data } = await supabase.from('profiles').select().eq('public_id', profile_id);
+    const { data } = await supabase.from('profiles').select().eq('public_id', public_id);
     const user = data?.[0];
     
     return (
