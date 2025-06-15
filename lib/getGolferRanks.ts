@@ -24,13 +24,13 @@ export async function  getGolferRanks(bucket:string = 'all'): Promise<DataGolfer
   const oneToTen = allRecords.slice(0, 10);
   const elevenToTwenty = allRecords.slice(10, 20);
   const twentyOneToForty = allRecords.slice(20, 40);
-  const fortyPlus = allRecords.slice(40);
+  const fortyOnePlus = allRecords.slice(40);
 
   cachedData = {
     '1-10': oneToTen,
     '11-20': elevenToTwenty,
     '21-40': twentyOneToForty,
-    '40': fortyPlus,
+    '41+': fortyOnePlus,
     'all': allRecords,
   };
   return cachedData[bucket];

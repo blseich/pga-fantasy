@@ -18,8 +18,8 @@ export default async function PickerPage({ searchParams, params }: { searchParam
     const { bucket } = await searchParams;
     const { public_id } = await params;
         const supabase = await createClient();
-    const { data: profileData, error: profileError } = await supabase.from('profiles').select('id').eq('public_id', public_id as string);
-    const { data: rosterData, error: rosterError } = await supabase.from('picks').select('dg_rank').eq('id', profileData?.[0].id || "").eq('rank_bucket', bucket);
+    const { data: profileData, error: profileError } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
+    const { data: rosterData, error: rosterError } = await supabase.from('picks').select('dg_rank').eq('user_id', profileData?.[0].user_id || "").eq('rank_bucket', bucket);
     const selectedDgRank = rosterData?.[0].dg_rank;
     console.log(selectedDgRank)
     const picks = await getGolferRanks(bucket);
@@ -51,5 +51,5 @@ export default async function PickerPage({ searchParams, params }: { searchParam
                 );
             })}
         </div>
-    )
+    );
 }

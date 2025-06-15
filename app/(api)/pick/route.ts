@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-        const { data, error } = await supabase.from('picks').upsert({ id: user?.id, golfer_id, rank_bucket, dg_rank }, { onConflict: 'id, rank_bucket' });
+        const { data, error } = await supabase.from('picks').upsert({ user_id: user?.id, golfer_id, rank_bucket, dg_rank }, { onConflict: 'user_id, rank_bucket' });
         if (error) {
             console.log(error);
             return Response.json({ success: false });

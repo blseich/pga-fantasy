@@ -39,22 +39,25 @@ export type Database = {
           created_at: string
           dg_rank: string
           golfer_id: string
-          id: string
+          id: number
           rank_bucket: string
+          user_id: string
         }
         Insert: {
           created_at?: string
           dg_rank: string
           golfer_id: string
-          id: string
+          id?: number
           rank_bucket: string
+          user_id: string
         }
         Update: {
           created_at?: string
           dg_rank?: string
           golfer_id?: string
-          id?: string
+          id?: number
           rank_bucket?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -62,23 +65,23 @@ export type Database = {
         Row: {
           created_at: string | null
           first_name: string | null
-          id: string
           last_name: string | null
           public_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string | null
           first_name?: string | null
-          id: string
           last_name?: string | null
           public_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string | null
           first_name?: string | null
-          id?: string
           last_name?: string | null
           public_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }

@@ -27,7 +27,7 @@ export default async function RootLayout({
 }>) {
   const supabase = await createClient();
   const { data: { user: currentUser } } = await supabase.auth.getUser();
-  const { data } = await supabase.from('profiles').select('public_id').eq('id', currentUser?.id);
+  const { data } = await supabase.from('profiles').select('public_id').eq('user_id', currentUser?.id);
   const profileId = data?.[0].public_id;
 
   return (

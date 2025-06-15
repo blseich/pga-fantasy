@@ -36,8 +36,8 @@ const Golfer = ({ golfer, rank_bucket, rank, score, swapLink }) => {
 export default async function RosterPage({ params }: { params: Params }) {
     const { public_id } = await params;
     const supabase = await createClient();
-    const { data: profileData, error: profileError } = await supabase.from('profiles').select('id').eq('public_id', public_id as string);
-    const { data: rosterData, error: rosterError } = await supabase.from('picks').select('golfer_id,rank_bucket,dg_rank').eq('id', profileData?.[0].id || "");
+    const { data: profileData, error: profileError } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
+    const { data: rosterData, error: rosterError } = await supabase.from('picks').select('golfer_id,rank_bucket,dg_rank').eq('user_id', profileData?.[0].user_id || "");
     const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
     const golferData = (await res.json()).events[0].competitions[0].competitors;
     const rankData = await getGolferRanks();
@@ -50,7 +50,7 @@ export default async function RosterPage({ params }: { params: Params }) {
                     const rank = rankData.find((rank) => rank.dg_rank === pick.dg_rank);
                     return <Golfer
                         key={`${public_id}:${pick.golfer_id}`}
-                        swapLink={`/user/${public_id}/picker?bucket=${pick.rank_bucket}`}
+                        swapLink={`/user/${public_id}/picker?bucket=${pick.rank_bucket.replace('+','%2B')}`}
                         golfer={golfer.athlete}
                         rank_bucket={pick.rank_bucket}
                         rank={rank}
