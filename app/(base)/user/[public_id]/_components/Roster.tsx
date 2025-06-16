@@ -1,23 +1,23 @@
 import { getGolferRanks } from "@/lib/getGolferRanks";
 import { createClient } from "@/utils/supabase/server";
 import SelectedGolfer from "./SelectedGolfer";
+import UnselectedGolfer from "./UnselectedGolfer";
 
 export default async function RosterPage({ public_id }: { public_id: string }) {
     const supabase = await createClient();
-    const { data: profileData, error: profileError } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
-    const { data: rosterData, error: rosterError } = await supabase.from('picks').select('golfer_id,rank_bucket,dg_rank').eq('user_id', profileData?.[0].user_id || "");
+    const { data } = await supabase.from('profiles').select('picks:picks (*)').eq('public_id', public_id as string);
     const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
     const golferData = (await res.json()).events[0].competitions[0].competitors;
+    const rosterData = data?.[0].picks || []
     const rankData = await getGolferRanks();
     return (
         <>
-            <h1 className="text-2xl font-black my-8 text-center">Your Roster</h1>
             {['1-10', '11-20', '21-40', '41+']
                 .map((bucket) => {
                     const swapLink = `/user/${public_id}/picker?bucket=${bucket.replace('+','%2B')}`;
                     const pick = rosterData?.find((pick) => pick.rank_bucket === bucket);
                     if (!pick) {
-                        return <Unselected key={bucket}rank_bucket={bucket} swapLink={swapLink} />
+                        return <UnselectedGolfer key={bucket}rank_bucket={bucket} swapLink={swapLink} />
                     }
                     const golfer = golferData.find((golfer) => golfer.id === pick.golfer_id);
                     const rank = rankData.find((rank) => rank.dg_rank === pick.dg_rank);
@@ -31,6 +31,7 @@ export default async function RosterPage({ public_id }: { public_id: string }) {
                             today: golfer.status.todayDetail || golfer.status.detail,
                             overall: golfer.statistics.find((stat: { name: string }) => stat.name === 'scoreToPar')?.displayValue || 0
                         }}
+                        locked={true}
                     />
                 })
             }

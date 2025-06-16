@@ -1,20 +1,26 @@
 import { createClient } from "@/utils/supabase/server";
 import { Params } from "next/dist/server/request/params";
 import Roster from './_components/Roster';
+import Tiebreaker from "./_components/Tiebreaker";
+import { UserCircle2 } from "lucide-react";
 
 export default async function UserPage({ params }: { params: Params }) {
     const { public_id } = await params;
     const supabase = await createClient();
     const { data: { user: loggedInUser }} = await supabase.auth.getUser();
-    const { data } = await supabase.from('profiles').select().eq('public_id', public_id);
+    const { data } = await supabase.from('profiles').select('first_name, last_name, public_id, tiebreakers:tiebreakers (tiebreaker_score)').eq('public_id', public_id as string);
     const user = data?.[0];
-    
+    const tiebreakerScore = data?.[0].tiebreakers?.tiebreaker_score || 0;
     return (
         <>
-            <h1>{loggedInUser?.id === user.user_id ? 'Current User!' : 'Not Current User'}</h1>
-            <h1>{user.first_name}</h1>
-            <h1>{user.last_name}</h1>
-            <Roster public_id={public_id} />
+            <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
+                <UserCircle2 className="h-[36px] w-[36px] text-gray-300"/>
+                <h1 className="text-4xl font-bold">{user?.first_name} {user?.last_name}</h1>
+            </div>
+            <h1 className="text-2xl font-black mt-8 mb-4 text-center">Tiebreaker</h1>
+            <Tiebreaker initScore={tiebreakerScore} locked={true} />
+            <h2 className="text-2xl font-black mt-8 mb-4 text-center">Roster</h2>
+            <Roster public_id={public_id as string} />
         </>
     )
 }

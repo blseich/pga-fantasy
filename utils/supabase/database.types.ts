@@ -93,6 +93,35 @@ export type Database = {
         }
         Relationships: []
       }
+      tiebreakers: {
+        Row: {
+          created_at: string
+          id: number
+          tiebreaker_score: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          tiebreaker_score?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          tiebreaker_score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tiebreakers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

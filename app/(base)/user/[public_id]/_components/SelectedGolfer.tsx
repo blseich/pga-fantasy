@@ -1,8 +1,8 @@
-import { ArrowRightLeft } from "lucide-react";
+import { ArrowRightLeft, LockKeyhole } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default  function SelectedGolfer({ golfer, rank_bucket, rank, score, swapLink }) {
+export default  function SelectedGolfer({ golfer, rank_bucket, rank, score, swapLink, locked }) {
     const [first, ...last] = golfer.displayName.split(' ');
     return (
         <div className="border-b-2 w-full mb-4 flex gap-2 pb-2 items-end">
@@ -23,7 +23,7 @@ export default  function SelectedGolfer({ golfer, rank_bucket, rank, score, swap
                     <div>DG Rank:</div><div>{rank.dg_rank}</div>
                     <div>WG Rank:</div><div>{rank.owgr_rank}</div>
                 </div>
-                <Link href={swapLink} className="bg-yellow-300 text-black px-4 py-2 rounded-lg mx-auto"><ArrowRightLeft/></Link>
+                {!locked && <Link href={swapLink} className="bg-yellow-300 text-black px-4 py-2 rounded-lg mx-auto"><ArrowRightLeft/></Link>}
             </div>
         </div>
     );

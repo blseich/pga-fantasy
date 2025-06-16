@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Image from "next/image";
-import { Tables } from "@/utils/supabase/database.types";
 import { UserWithPickDetails } from '../page';
 
 
@@ -32,16 +31,25 @@ const GolferScore = ({ golfer, score, unscored }: UserWithPickDetails['picks'][0
 );
 
 export default function Rankings({ users }: { users: UserWithPickDetails[] }) {
-    const [activeCard, setActiveCard] = useState<number | null>(0);
-    return users.sort((userA, userB) => userA.score.value - userB.score.value).map((user, i) => (
+    const [activeCards, setActiveCards] = useState<number[]>([]);
+
+    const toggleCard = useCallback((i: number) => {
+        if (activeCards.includes(i)) {
+            setActiveCards(activeCards.filter((index) => index !== i));
+        } else {
+            setActiveCards(activeCards.concat(i));
+        }
+    }, [activeCards]);
+
+    return users.map((user, i) => (
         // <Rank user_id={user.user_id} />
         <button
             key={user.public_id} style={{["--i" as any]: i}}
-            className={`card  border border-foreground/10 ${activeCard === i ? 'w-full p-4' : 'w-10/12 p-2'}`}
-            onClick={() => activeCard === i ? setActiveCard(null) : setActiveCard(i)}
+            className={`card  border border-foreground/10 ${activeCards.includes(i) ? 'w-full p-4' : 'w-10/12 p-2'}`}
+            onClick={() => toggleCard(i)}
         >
             <RankHeading {...user} rank={i+1} />
-            <div className={`${activeCard === i ? 'max-h-80' : 'max-h-0'} transition-all duration-500 ease-out bg-black overflow-hidden`}>
+            <div className={`${activeCards.includes(i) ? 'max-h-80' : 'max-h-0'} transition-all duration-500 ease-out bg-black overflow-hidden`}>
                 {user.picks.map((pick, i) => (
                     <GolferScore {...pick} unscored={i === user.picks.length - 1}/>
                 ))}

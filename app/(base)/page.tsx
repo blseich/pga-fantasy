@@ -4,7 +4,7 @@ import Rankings from './_components/Rankings';
 import { Tables } from '@/utils/supabase/database.types';
 import { Trophy } from 'lucide-react';
 
-type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] }
+type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number } | null }
 type PickWithDetails = Tables<'picks'> & {
   golfer: {
     first_name: string,
@@ -24,7 +24,8 @@ export type UserWithPickDetails = Pick<Tables<'profiles'>, 'first_name' | 'last_
     score: {
       value: number,
       displayValue: string,
-    }
+    };
+    
 }
 
 const generateRankings = (users: UserWithPicks[], event): UserWithPickDetails[] => {
@@ -32,6 +33,10 @@ const generateRankings = (users: UserWithPicks[], event): UserWithPickDetails[] 
     ...acc,
     [player.id]: player,
   }), {});
+  const leadingScore = event.competitions[0].competitors.reduce((acc: number, player: any) => {
+        const currentPlayerScore = player.statistics.find((stat: { name: string }) => stat.name === 'scoreToPar')?.value || Number.POSITIVE_INFINITY;
+        return currentPlayerScore < acc ? currentPlayerScore : acc
+  }, Number.POSITIVE_INFINITY);
   const rankings = users.map((user) => {
     const picksWithScores = user.picks.map((pick) => ({
       ...pick,
@@ -59,16 +64,16 @@ const generateRankings = (users: UserWithPicks[], event): UserWithPickDetails[] 
       }, { value: 0, displayValue: 'E'})
     };
   });
-  return rankings;
+  return rankings.sort((userA, userB) => userA.score.value - userB.score.value || Math.abs(userA.tiebreakers?.tiebreaker_score || 0 - leadingScore) - Math.abs(userB.tiebreakers?.tiebreaker_score || 0 - leadingScore));
 }
 
 export default async function Home() {
   const supabase = await createClient();
-  const { data: users } = await supabase.from('profiles').select('first_name, last_name, public_id, picks:picks (*)');
+  const { data: users } = await supabase.from('profiles').select('first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)');
   const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
   const event = await res.json();
   const rankings = generateRankings(users || [], event.events[0]);
-  console.log(rankings[0].picks);
+
   return (
     <>
       <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
