@@ -81,7 +81,7 @@ export default async function Home() {
         <h1 className="text-4xl font-bold">{event.events[0].name}</h1>
         <h2 className="text-brand-blue">{event.events[0].courses[0].name}</h2>
       </div>
-      <div className="w-full max-w-screen-md p-4 flex flex-col gap-4 items-center">
+      <div className="w-full p-4 flex flex-col gap-4 items-center">
         <Rankings users={rankings || []} event={event}/>
       </div>
     </>

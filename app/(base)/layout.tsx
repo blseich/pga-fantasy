@@ -49,7 +49,9 @@ export default async function RootLayout({
                   <User2 className="h-10 w-10 rounded-full border-[3px] border-gray-500 text-gray-500" />
                 </Link>
               </nav>
-              {children}
+              <div className="max-w-screen-md mx-auto">
+                {children}
+              </div>
           </main>
           <footer className="w-full flex items-center justify-center border-t py-2 px-4">
             <p>
