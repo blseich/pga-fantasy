@@ -3,6 +3,8 @@ import './home.css';
 import Rankings from './_components/Rankings';
 import { Tables } from '@/utils/supabase/database.types';
 import { Trophy } from 'lucide-react';
+import getTournament from '@/lib/pga-endpoints/getTournament';
+import Image from 'next/image';
 
 type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number } | null }
 type PickWithDetails = Tables<'picks'> & {
@@ -73,13 +75,13 @@ export default async function Home() {
   const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
   const event = await res.json();
   const rankings = generateRankings(users || [], event.events[0]);
-
+  const tournament = await getTournament();
   return (
     <>
-      <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
-        <Trophy className="h-[36px] w-[36px] text-yellow-300"/>
-        <h1 className="text-4xl font-bold">{event.events[0].name}</h1>
-        <h2 className="text-brand-blue">{event.events[0].courses[0].name}</h2>
+      <div className="flex flex-col items-center justify-center mx-auto mb-8 gap-2 py-16 px-8" style={{ backgroundImage: `url(${tournament.beautyImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
+        <Image className="h-[72px] w-[72px] rounded-full" width={72} height={72} alt={tournament.tournamentName} src={tournament.tournamentLogo[0]} />
+        <h1 className="text-4xl font-bold text-center">{tournament.tournamentName}</h1>
+        <h2 className="text-center">{tournament.courses[0].courseName}</h2>
       </div>
       <div className="w-full p-4 flex flex-col gap-4 items-center">
         <Rankings users={rankings || []} event={event}/>

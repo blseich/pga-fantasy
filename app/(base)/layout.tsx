@@ -34,20 +34,22 @@ export default async function RootLayout({
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
           <main className="min-h-screen">
-              <nav className="w-full border-b border-b-foreground/10 py-2 px-4 flex items-center justify-center">
-                <button className="mr-auto text-gray-500">
-                  <SquareMenu className="h-10 w-10" />
-                </button>
-                <Link className="flex items-center gap-1" href="/">
-                  <LogoSvg />
-                  <div className="flex flex-col items-end">
-                    <p className="font-black text-brand-green text-lg">PGA</p>
-                    <p className="text-xs">Pick'Em</p>
-                  </div>
-                </Link>
-                <Link className="ml-auto" href={`/user/${profileId}`}>
-                  <User2 className="h-10 w-10 rounded-full border-[3px] border-gray-500 text-gray-500" />
-                </Link>
+              <nav className="w-full border-b border-b-foreground/10">
+                <div className="max-w-screen-md  py-2 px-4 flex items-center justify-center mx-auto">
+                  <button className="mr-auto text-gray-500">
+                    <SquareMenu className="h-10 w-10" />
+                  </button>
+                  <Link className="flex items-center gap-1" href="/">
+                    <LogoSvg />
+                    <div className="flex flex-col items-end">
+                      <p className="font-black text-brand-green text-lg">PGA</p>
+                      <p className="text-xs">Pick'Em</p>
+                    </div>
+                  </Link>
+                  <Link className="ml-auto" href={`/user/${profileId}`}>
+                    <User2 className="h-10 w-10 rounded-full border-[3px] border-gray-500 text-gray-500" />
+                  </Link>
+                </div>
               </nav>
               <div className="max-w-screen-md mx-auto">
                 {children}

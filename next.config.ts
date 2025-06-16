@@ -4,7 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       new URL("https://www.espn.com/i/headshots/golf/players/full/**"),
-      new URL("https://a.espncdn.com/i/headshots/golf/players/full/**")
+      new URL("https://a.espncdn.com/i/headshots/golf/players/full/**"),
+      new URL("https://res.cloudinary.com/pgatour-prod/**")
     ]
   },
   webpack(config) {
