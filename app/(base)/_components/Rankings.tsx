@@ -22,8 +22,12 @@ const GolferScore = ({ golfer, score, unscored }: UserWithPickDetails['picks'][0
             <div className="">{golfer.last_name}</div>
         </div>
         <div className="ml-auto grid grid-rows-[auto_auto] grid-cols-[auto_auto] text-right gap-x-2">
-            <div className="text-xs">Today:</div>
-            <div className="text-xs">{score.today}</div>
+            {score.today === 'CUT' ? (<div className="col-span-2 text-red-400">CUT</div>) : (
+                <>
+                    <div className="text-xs">Today:</div>
+                    <div className="text-xs">{score.today}</div>
+                </>
+            )}
             <div className="">Overall:</div>
             <div className="">{score.overall.displayValue}</div>
         </div>

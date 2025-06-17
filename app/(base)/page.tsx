@@ -3,7 +3,7 @@ import './home.css';
 import Rankings from './_components/Rankings';
 import { Tables } from '@/utils/supabase/database.types';
 import { Trophy } from 'lucide-react';
-import getTournament from '@/lib/pga-endpoints/getTournament';
+import { getLeaderboard, getTournament } from '@/lib/pga-endpoints/getTournament';
 import Image from 'next/image';
 
 type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number } | null }
@@ -30,28 +30,39 @@ export type UserWithPickDetails = Pick<Tables<'profiles'>, 'first_name' | 'last_
     
 }
 
-const generateRankings = (users: UserWithPicks[], event): UserWithPickDetails[] => {
-  const golfersIdMap = event.competitions[0].competitors.reduce((acc: Record<string, any>, player: any) => ({
-    ...acc,
-    [player.id]: player,
-  }), {});
-  const leadingScore = event.competitions[0].competitors.reduce((acc: number, player: any) => {
-        const currentPlayerScore = player.statistics.find((stat: { name: string }) => stat.name === 'scoreToPar')?.value || Number.POSITIVE_INFINITY;
-        return currentPlayerScore < acc ? currentPlayerScore : acc
-  }, Number.POSITIVE_INFINITY);
+const numericScore = (score: string) => (
+  score === 'E' ? 0 : Number.parseInt(score)
+);
+
+const generateRankings = (users: UserWithPicks[], leaderboard): UserWithPickDetails[] => {
+  // const golfersIdMap = event.competitions[0].competitors.reduce((acc: Record<string, any>, player: any) => ({
+  //   ...acc,
+  //   [player.id]: player,
+  // }), {});
+  // const leadingScore = event.competitions[0].competitors.reduce((acc: number, player: any) => {
+  //       const currentPlayerScore = player.statistics.find((stat: { name: string }) => stat.name === 'scoreToPar')?.value || Number.POSITIVE_INFINITY;
+  //       return currentPlayerScore < acc ? currentPlayerScore : acc
+  // }, Number.POSITIVE_INFINITY);
+  const leadingScore = Number.parseInt(leaderboard[0].scoringData.total);
   const rankings = users.map((user) => {
-    const picksWithScores = user.picks.map((pick) => ({
-      ...pick,
-      golfer: {
-        first_name: golfersIdMap[pick.golfer_id].athlete.displayName.split(' ')[0],
-        last_name: golfersIdMap[pick.golfer_id].athlete.lastName,
-        headshot: golfersIdMap[pick.golfer_id].athlete.headshot.href,
-      },
-      score: {
-        today: golfersIdMap[pick.golfer_id].status.todayDetail || golfersIdMap[pick.golfer_id].status.detail,
-        overall: golfersIdMap[pick.golfer_id].statistics.find((stat: { name: string }) => stat.name === 'scoreToPar')
+    const picksWithScores = user.picks.map((pick) => {
+      const golfer = leaderboard.find((entry) => entry.player?.id === pick.golfer_id);
+      return {
+        ...pick,
+        golfer: {
+          first_name: golfer.player.firstName,
+          last_name: golfer.player.lastName,
+          headshot: `https://pga-tour-res.cloudinary.com/image/upload/headshots_${golfer.player.id}.png`,
+        },
+        score: {
+          today: golfer.scoringData.position === 'CUT' ? 'CUT' : `${golfer.scoringData.score} (${golfer.scoringData.thru})`,
+          overall: {
+            displayValue: golfer.scoringData.total,
+            value: numericScore(golfer.scoringData.total),
+          }
+        }
       }
-    })).sort((pickA, pickB) => pickA.score.overall.value - pickB.score.overall.value);
+    }).sort((pickA, pickB) => pickA.score.overall.value - pickB.score.overall.value);
     return {
       ...user,
       picks: picksWithScores,
@@ -72,10 +83,10 @@ const generateRankings = (users: UserWithPicks[], event): UserWithPickDetails[] 
 export default async function Home() {
   const supabase = await createClient();
   const { data: users } = await supabase.from('profiles').select('first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)');
-  const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
-  const event = await res.json();
-  const rankings = generateRankings(users || [], event.events[0]);
   const tournament = await getTournament();
+  const leaderboard = await getLeaderboard();
+  const rankings = generateRankings(users || [], leaderboard);
+
   return (
     <>
       <div className="flex flex-col items-center justify-center mx-auto mb-8 gap-2 py-16 px-8" style={{ backgroundImage: `url(${tournament.beautyImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
@@ -84,7 +95,7 @@ export default async function Home() {
         <h2 className="text-center">{tournament.courses[0].courseName}</h2>
       </div>
       <div className="w-full p-4 flex flex-col gap-4 items-center">
-        <Rankings users={rankings || []} event={event}/>
+        <Rankings users={rankings || []} />
       </div>
     </>
   );

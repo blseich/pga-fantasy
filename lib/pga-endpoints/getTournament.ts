@@ -3,9 +3,29 @@ query TournamentsWithField($ids: [ID!], $fieldId: ID!) {
   tournaments(ids: $ids) {
     ...TournamentFragment
   }
-  field(id: $fieldId) {
+  field: field(id: $fieldId) {
     players {
       ...FieldPlayer
+    }
+  }
+  leaderboard: leaderboardV3(id: $fieldId) {
+    id
+    players {
+      ... on PlayerRowV3 {
+        leaderboardSortOrder
+        player {
+          id
+          firstName
+          lastName
+        }
+        scoringData {
+          teeTime
+          total
+          thru
+          score
+          position
+        }
+      }
     }
   }
 }
@@ -14,7 +34,6 @@ fragment FieldPlayer on PlayerField {
   id
   firstName
   lastName
-  headshot
 }
 
 fragment TournamentFragment on Tournament {
@@ -30,10 +49,10 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
-const variables = { "ids": ["R2025100"], "fieldId": "R2025100" };
+const variables = { "ids": ["R2025026"], "fieldId": "R2025026" };
 
-export default async function getTournament() {
-    const res = await fetch('https://orchestrator.pgatour.com/graphql', {
+const  getPGAData = async function() {
+   const res = await fetch('https://orchestrator.pgatour.com/graphql', {
         method: 'POST',
         body: JSON.stringify({ query, variables }),
         headers: {
@@ -42,6 +61,21 @@ export default async function getTournament() {
             'Referrer': 'https://www.pgatour.com/'
         }
     });
-    const { data } = await res.json();
-    return data.tournaments[0];
+  const { data } = await res.json();
+  return data;
+}
+
+export async function getTournament() {
+    const { tournaments: [tournament] } = await getPGAData();
+    return tournament;
 };
+
+export async function getField() {
+    const { field: { players } } = await getPGAData();
+    return players;
+};
+
+export async function getLeaderboard() {
+  const { leaderboard: { players } } = await getPGAData();
+  return players;
+}

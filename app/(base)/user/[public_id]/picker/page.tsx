@@ -5,6 +5,7 @@ import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
 import { PickButton } from "./_components/PickButton";
 import { createClient } from "@/utils/supabase/server";
+import { getField } from "@/lib/pga-endpoints/getTournament";
 
 const GolferImage = ({ src, alt }: { src?: string, alt?: string }) => (
     <div className="overflow-hidden rounded-full w-[75px] bg-brand-blue aspect-square flex flex-col justify-end items-center">
@@ -18,13 +19,11 @@ export default async function PickerPage({ searchParams, params }: { searchParam
     const { bucket } = await searchParams;
     const { public_id } = await params;
         const supabase = await createClient();
-    const { data: profileData, error: profileError } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
-    const { data: rosterData, error: rosterError } = await supabase.from('picks').select('dg_rank').eq('user_id', profileData?.[0].user_id || "").eq('rank_bucket', bucket);
+    const { data: profileData } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
+    const { data: rosterData } = await supabase.from('picks').select('dg_rank').eq('user_id', profileData?.[0].user_id || "").eq('rank_bucket', bucket);
     const selectedDgRank = rosterData?.[0]?.dg_rank;
     const picks = await getGolferRanks(bucket);
-    const res = await fetch('https://site.web.api.espn.com/apis/site/v2/sports/golf/leaderboard?league=pga&region=us&lang=en&event=401703515');
-    const data = await res.json();
-    const golfers = data.events[0].competitions[0].competitors.map(({ athlete }) => athlete);
+    const golfers = await getField();
     return (
         <>
             <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
@@ -35,13 +34,13 @@ export default async function PickerPage({ searchParams, params }: { searchParam
             <div className="flex flex-col items-center justify-center">
                 {picks.map((pick) => {
                     const [last, first] = pick.player_name.split(', ');
-                    const golfer = golfers.find((g) => g.displayName.includes(last) && g.displayName.includes(first));
+                    const golfer = golfers.find((g) => g.lastName.includes(last) && g.firstName.includes(first));
                     const isPicked = selectedDgRank === pick.dg_rank;
                     const isPickable = Boolean(golfer);
 
                     return (
                         <div className="flex items-center gap-2 border-b-2 border-b-gray-500 w-11/12 mb-4 px-2 pb-4" key={pick.player_name}>
-                            {isPickable ? <GolferImage src={golfer.headshot?.href} alt={`${first} ${last}`} /> : <X className="w-[75px] h-[75px]"/>}
+                            {isPickable ? <GolferImage src={`https://pga-tour-res.cloudinary.com/image/upload/headshots_${golfer.id}.png`} alt={`${first} ${last}`} /> : <X className="w-[75px] h-[75px]"/>}
                             <div>
                                 <div className="font-bold">{first} {last}</div>
                                 <div className="grid grid-cols-[55px_auto] grid-rows-2">

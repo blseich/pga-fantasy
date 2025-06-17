@@ -1,3 +1,5 @@
+import { getLeaderboard } from "@/lib/pga-endpoints/getTournament";
+
 const query = `
 query TournamentsWithField($ids: [ID!], $fieldId: ID!) {
   tournaments(ids: $ids) {
@@ -8,13 +10,32 @@ query TournamentsWithField($ids: [ID!], $fieldId: ID!) {
       ...FieldPlayer
     }
   }
+  leaderboardV3(id: $fieldId) {
+    id
+    players {
+      ... on PlayerRowV3 {
+        leaderboardSortOrder
+        player {
+          id
+          firstName
+          lastName
+        }
+        scoringData {
+          teeTime
+          total
+          thru
+          score
+          playerState
+        }
+      }
+    }
+  }
 }
 
 fragment FieldPlayer on PlayerField {
   id
   firstName
   lastName
-  headshot
 }
 
 fragment TournamentFragment on Tournament {
@@ -30,18 +51,54 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
+// const query = `
+//   query{
+//     __schema {
+//       types {
+//         name
+//       }
+//     }
+//   }
+// `
+
+// const query = `
+// query {
+//   playerRowV3: __type(name: "PlayerRowV3") {
+//     name
+//     fields {
+//       name
+//       type {
+//         name
+//         kind
+//       }
+//     }
+//   }
+//   leaderboardScoringDataV3: __type(name: "LeaderboardScoringDataV3") {
+//     name
+//     fields {
+//       name
+//       type {
+//         name
+//         kind
+//       }
+//     }
+//   }
+// }
+// `
+
 const variables = { "ids": ["R2025034"], "fieldId": "R2025034" };
 
 export default async function PgaEndpointPage() {
-    const res = await fetch('https://orchestrator.pgatour.com/graphql', {
-        method: 'POST',
-        body: JSON.stringify({ query, variables }),
-        headers: {
-            'X-Api-Key': 'da2-gsrx5bibzbb4njvhl7t37wqyl4',
-            'Origin': 'https://www.pgatour.com',
-            'Referrer': 'https://www.pgatour.com/'
-        }
-    });
-    const data = await res.json();
+    // const res = await fetch('https://orchestrator.pgatour.com/graphql', {
+    //     method: 'POST',
+    //     body: JSON.stringify({ query, variables }),
+    //     headers: {
+    //         'X-Api-Key': 'da2-gsrx5bibzbb4njvhl7t37wqyl4',
+    //         'Origin': 'https://www.pgatour.com',
+    //         'Referrer': 'https://www.pgatour.com/'
+    //     }
+    // });
+    // const data = await res.json();
+    const data = await getLeaderboard();
     return <div>{JSON.stringify(data)}</div>
 };

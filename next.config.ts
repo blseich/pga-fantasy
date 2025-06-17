@@ -3,9 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      new URL("https://www.espn.com/i/headshots/golf/players/full/**"),
-      new URL("https://a.espncdn.com/i/headshots/golf/players/full/**"),
-      new URL("https://res.cloudinary.com/pgatour-prod/**")
+      new URL("https://res.cloudinary.com/pgatour-prod/**"),
+      new URL("https://pga-tour-res.cloudinary.com/image/**")
     ]
   },
   webpack(config) {
