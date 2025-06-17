@@ -16,7 +16,14 @@ export default async function LeaderboardPage() {
                 <TableProperties className="h-[36px] w-[36px] text-gray-300"/>
                 <h1 className="text-4xl font-bold">Leaderboard</h1>
             </div>
-            <LeaderboardDisplay leaderboard={leaderboard} picks={data || []} user_id={user?.id} />
+            {tournament.tournamentStatus === 'NOT_STARTED' ? (
+                <div className="text-center my-8">
+                    <h1 className="text-2xl font-bold">Tournament Not Started</h1>
+                    <h2 className="text-red-400">Leaderboard will appear after selections are locked for this tournament</h2>
+                </div>
+            ): (
+                <LeaderboardDisplay leaderboard={leaderboard} picks={data || []} user_id={user?.id} />
+            )}
         </>
     );
 }
