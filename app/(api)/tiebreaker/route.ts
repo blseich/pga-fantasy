@@ -1,10 +1,12 @@
+import { getTournament } from "@/lib/pga-endpoints/getTournament";
 import { createClient } from "@/utils/supabase/server";
 
 export async function POST(request: Request) {
     const { tiebreaker_score} = await request.json();
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
+    const tournament = await getTournament();
+    if (user && tournament.tournamentStatus === 'NOT_STARTED') {
         const { data, error } = await supabase.from('tiebreakers').upsert({ user_id: user?.id, tiebreaker_score }, { onConflict: 'user_id' });
         if (error) {
             console.log(error);

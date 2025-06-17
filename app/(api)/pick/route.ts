@@ -1,10 +1,12 @@
+import { getTournament } from "@/lib/pga-endpoints/getTournament";
 import { createClient } from "@/utils/supabase/server";
 
 export async function POST(request: Request) {
     const { golfer_id, rank_bucket, dg_rank } = await request.json();
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
+    const tournament = await getTournament();
+    if (user && tournament.tournamentStatus === 'NOT_STARTED') {
         const { data, error } = await supabase.from('picks').upsert({ user_id: user?.id, golfer_id, rank_bucket, dg_rank }, { onConflict: 'user_id, rank_bucket' });
         if (error) {
             console.log(error);
