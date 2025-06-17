@@ -3,14 +3,15 @@ import { Params } from "next/dist/server/request/params";
 import Roster from './_components/Roster';
 import Tiebreaker from "./_components/Tiebreaker";
 import { UserCircle2 } from "lucide-react";
+import { getTournament } from "@/lib/pga-endpoints/getTournament";
 
 export default async function UserPage({ params }: { params: Params }) {
     const { public_id } = await params;
     const supabase = await createClient();
-    const { data: { user: loggedInUser }} = await supabase.auth.getUser();
     const { data } = await supabase.from('profiles').select('first_name, last_name, public_id, tiebreakers:tiebreakers (tiebreaker_score)').eq('public_id', public_id as string);
     const user = data?.[0];
     const tiebreakerScore = data?.[0].tiebreakers?.tiebreaker_score || 0;
+    const tournament = await getTournament();
     return (
         <>
             <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
@@ -18,9 +19,9 @@ export default async function UserPage({ params }: { params: Params }) {
                 <h1 className="text-4xl font-bold">{user?.first_name} {user?.last_name}</h1>
             </div>
             <h1 className="text-2xl font-black mt-8 mb-4 text-center">Tiebreaker</h1>
-            <Tiebreaker initScore={tiebreakerScore} locked={true} />
+            <Tiebreaker initScore={tiebreakerScore} locked={tournament.tournamentStatus !== 'NOT_STARTED'}/>
             <h2 className="text-2xl font-black mt-8 mb-4 text-center">Roster</h2>
-            <Roster public_id={public_id as string} />
+            <Roster public_id={public_id as string} locked={tournament.tournamentStatus !== 'NOT_STARTED'} />
         </>
     )
 }

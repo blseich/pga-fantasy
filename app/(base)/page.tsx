@@ -5,6 +5,7 @@ import { Tables } from '@/utils/supabase/database.types';
 import { Trophy } from 'lucide-react';
 import { getLeaderboard, getTournament } from '@/lib/pga-endpoints/getTournament';
 import Image from 'next/image';
+import Countdown from './_components/Countdown';
 
 type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number } | null }
 type PickWithDetails = Tables<'picks'> & {
@@ -35,14 +36,6 @@ const numericScore = (score: string) => (
 );
 
 const generateRankings = (users: UserWithPicks[], leaderboard): UserWithPickDetails[] => {
-  // const golfersIdMap = event.competitions[0].competitors.reduce((acc: Record<string, any>, player: any) => ({
-  //   ...acc,
-  //   [player.id]: player,
-  // }), {});
-  // const leadingScore = event.competitions[0].competitors.reduce((acc: number, player: any) => {
-  //       const currentPlayerScore = player.statistics.find((stat: { name: string }) => stat.name === 'scoreToPar')?.value || Number.POSITIVE_INFINITY;
-  //       return currentPlayerScore < acc ? currentPlayerScore : acc
-  // }, Number.POSITIVE_INFINITY);
   const leadingScore = Number.parseInt(leaderboard[0].scoringData.total);
   const rankings = users.map((user) => {
     const picksWithScores = user.picks.map((pick) => {
@@ -80,22 +73,29 @@ const generateRankings = (users: UserWithPicks[], leaderboard): UserWithPickDeta
   return rankings.sort((userA, userB) => userA.score.value - userB.score.value || Math.abs(userA.tiebreakers?.tiebreaker_score || 0 - leadingScore) - Math.abs(userB.tiebreakers?.tiebreaker_score || 0 - leadingScore));
 }
 
+const getTargetDate = (date: string) => {
+  const [month, firstDay, dash, secondDay, year] = date.split(" ");
+  return new Date(`${month} ${firstDay}, ${year} 06:00:00 EST`);
+}
+
 export default async function Home() {
   const supabase = await createClient();
-  const { data: users } = await supabase.from('profiles').select('first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)');
+  const { data: { user }} = await supabase.auth.getUser();
+  const { data: users } = await supabase.from('profiles').select('user_id, first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)');
   const tournament = await getTournament();
   const leaderboard = await getLeaderboard();
-  const rankings = generateRankings(users || [], leaderboard);
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center mx-auto mb-8 gap-2 py-16 px-8" style={{ backgroundImage: `url(${tournament.beautyImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
+      <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2 py-16 px-8 aspect-square w-11/12" style={{ backgroundImage: `url(${tournament.beautyImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <Image className="h-[72px] w-[72px] rounded-full" width={72} height={72} alt={tournament.tournamentName} src={tournament.tournamentLogo[0]} />
         <h1 className="text-4xl font-bold text-center">{tournament.tournamentName}</h1>
-        <h2 className="text-center">{tournament.courses[0].courseName}</h2>
+        <h2 className="text-center font-bold">{tournament.courses[0].courseName}</h2>
       </div>
       <div className="w-full p-4 flex flex-col gap-4 items-center">
-        <Rankings users={rankings || []} />
+      {tournament.tournamentStatus === 'NOT_STARTED'
+          ? <Countdown targetDate={getTargetDate(tournament.displayDate)} pickLink={`/user/${users?.find((u) => u.user_id === user?.id)?.public_id}`}/>
+          : <Rankings users={generateRankings(users || [], leaderboard)} />}
       </div>
     </>
   );

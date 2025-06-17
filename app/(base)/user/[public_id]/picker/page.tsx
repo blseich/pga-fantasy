@@ -5,7 +5,7 @@ import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
 import { PickButton } from "./_components/PickButton";
 import { createClient } from "@/utils/supabase/server";
-import { getField } from "@/lib/pga-endpoints/getTournament";
+import { getField, getTournament } from "@/lib/pga-endpoints/getTournament";
 
 const GolferImage = ({ src, alt }: { src?: string, alt?: string }) => (
     <div className="overflow-hidden rounded-full w-[75px] bg-brand-blue aspect-square flex flex-col justify-end items-center">
@@ -18,12 +18,19 @@ const GolferImage = ({ src, alt }: { src?: string, alt?: string }) => (
 export default async function PickerPage({ searchParams, params }: { searchParams: SearchParams, params: Params }) {
     const { bucket } = await searchParams;
     const { public_id } = await params;
-        const supabase = await createClient();
-    const { data: profileData } = await supabase.from('profiles').select('user_id').eq('public_id', public_id as string);
-    const { data: rosterData } = await supabase.from('picks').select('dg_rank').eq('user_id', profileData?.[0].user_id || "").eq('rank_bucket', bucket);
+    const supabase = await createClient();
+    const { data: rosterData } = await supabase.from('picks').select('dg_rank, profiles!inner(public_id)').eq('profiles.public_id', public_id as string || "").eq('rank_bucket', bucket);
     const selectedDgRank = rosterData?.[0]?.dg_rank;
     const picks = await getGolferRanks(bucket);
     const golfers = await getField();
+
+    const tournament = await getTournament();
+    if (tournament.tournamentStatus !== 'NOT_STARTED') {
+        return (<div>
+            <h1>The Tournament Has Started!</h1>
+            <h2>Roster changes are no long permitted</h2>
+        </div>);
+    }
     return (
         <>
             <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">

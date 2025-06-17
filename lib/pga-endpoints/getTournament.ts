@@ -43,13 +43,14 @@ fragment TournamentFragment on Tournament {
   tournamentLogo
   tournamentLocation
   tournamentStatus
+  displayDate
   courses {
     id
     courseName
   }
 }`;
 
-const variables = { "ids": ["R2025026"], "fieldId": "R2025026" };
+const variables = { "ids": ["R2025034"], "fieldId": "R2025034" };
 
 const  getPGAData = async function() {
    const res = await fetch('https://orchestrator.pgatour.com/graphql', {
