@@ -27,7 +27,7 @@ export default function Tiebreaker({ initScore, locked }: { initScore: number, l
     const [score, setScore] = useState(initScore);
     
     return (
-        <>
+        <div className="tiebreaker">
             <div className="text-center mb-4">Winning Score to Par:</div>
             <div className="flex gap-2 justify-center items-center">
                 {!locked && (<button className="text-2xl font-bold text-brand-green w-12 aspect-square" onClick={() => {
@@ -40,6 +40,6 @@ export default function Tiebreaker({ initScore, locked }: { initScore: number, l
                     setScore(score + 1)
                 }}>+</button>)}
             </div>
-        </>
+        </div>
     )
 }

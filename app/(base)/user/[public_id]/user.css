@@ -1,0 +1,25 @@
+.pick {
+    opacity: 1;
+    transform: translateX(0);
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+    transition-delay: calc(200ms * var(--i));
+    transition-timing-function: ease-out;
+
+    @starting-style {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+}
+
+.tiebreaker {
+    opacity: 1;
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+    transition-delay: 0;
+    transition-timing-function: ease-out;
+
+    @starting-style {
+        opacity: 0;
+    }
+}

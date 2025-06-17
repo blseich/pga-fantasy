@@ -1,8 +1,15 @@
+import { PropsWithChildren  } from "react";
 import { getGolferRanks } from "@/lib/getGolferRanks";
 import { createClient } from "@/utils/supabase/server";
 import SelectedGolfer from "./SelectedGolfer";
 import UnselectedGolfer from "./UnselectedGolfer";
 import { getField, getLeaderboard, getTournament } from "@/lib/pga-endpoints/getTournament";
+
+const PickWrapper = ({ children, index }: PropsWithChildren<{index: number}>) => (
+    <div className="pick" style={{["--i" as any]: index}}>
+        {children}
+    </div>
+)
 
 export default async function RosterPage({ public_id, locked }: { public_id: string, locked: boolean }) {
     const supabase = await createClient();
@@ -15,23 +22,30 @@ export default async function RosterPage({ public_id, locked }: { public_id: str
     return (
         <>
             {['1-10', '11-20', '21-40', '41+']
-                .map((bucket) => {
+                .map((bucket, i) => {
                     const swapLink = `/user/${public_id}/picker?bucket=${bucket.replace('+','%2B')}`;
                     const pick = rosterData?.find((pick) => pick.rank_bucket === bucket);
                     if (!pick) {
-                        return <UnselectedGolfer key={bucket}rank_bucket={bucket} swapLink={swapLink} />
+                        return (
+                            <PickWrapper index={i} key={bucket}>
+                                <UnselectedGolfer rank_bucket={bucket} swapLink={swapLink} />
+                            </PickWrapper>
+                        );
                     }
-
                     const rank = rankData.find((rank) => rank.dg_rank === pick.dg_rank);
                     const golfer = golfers.find((golfer) => (golfer.player || golfer)?.id === pick.golfer_id);
-                    return <SelectedGolfer
-                        key={`${public_id}:${pick.golfer_id}`}
-                        swapLink={swapLink}
-                        golfer={golfer.player || golfer}
-                        scoringData={golfer.scoringData || {}}
-                        rank_bucket={pick.rank_bucket}
-                        rank={rank}
-                    />
+
+                    return (
+                        <PickWrapper index={i} key={`${public_id}:${pick.golfer_id}`}>
+                            <SelectedGolfer
+                                swapLink={swapLink}
+                                golfer={golfer.player || golfer}
+                                scoringData={golfer.scoringData || {}}
+                                rank_bucket={pick.rank_bucket}
+                                rank={rank}
+                            />
+                        </PickWrapper>
+                    );
                 })
             }
         </>

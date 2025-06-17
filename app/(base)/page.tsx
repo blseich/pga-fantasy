@@ -91,7 +91,7 @@ export default async function Home() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2 py-16 px-8 aspect-square w-11/12" style={{ backgroundImage: `url(${tournament.beautyImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
+      <div className="hero flex flex-col items-center justify-center mx-auto my-8 gap-2 py-16 px-8 aspect-square w-11/12" style={{ backgroundImage: `url(${tournament.beautyImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <Image className="h-[72px] w-[72px] rounded-full" width={72} height={72} alt={tournament.tournamentName} src={tournament.tournamentLogo[0]} />
         <h1 className="text-4xl font-bold text-center">{tournament.tournamentName}</h1>
         <h2 className="text-center font-bold">{tournament.courses[0].courseName}</h2>

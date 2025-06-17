@@ -4,6 +4,7 @@ import Roster from './_components/Roster';
 import Tiebreaker from "./_components/Tiebreaker";
 import { UserCircle2 } from "lucide-react";
 import { getTournament } from "@/lib/pga-endpoints/getTournament";
+import './user.css';
 
 export default async function UserPage({ params }: { params: Params }) {
     const { public_id } = await params;
