@@ -81,9 +81,13 @@ const getTargetDate = (date: string) => {
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user }} = await supabase.auth.getUser();
-  const { data: users } = await supabase.from('profiles').select('user_id, first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)');
   const tournament = await getTournament();
   const leaderboard = await getLeaderboard();
+  const { data: users } = await supabase
+    .from('profiles')
+    .select('user_id, first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)')
+    .filter('picks.tournament_id', 'eq', tournament.id)
+    .filter('tiebreakers.tournament_id', 'eq', tournament.id);
 
   return (
     <>

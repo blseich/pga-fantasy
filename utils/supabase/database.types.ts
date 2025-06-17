@@ -41,6 +41,7 @@ export type Database = {
           golfer_id: string
           id: number
           rank_bucket: string
+          tournament_id: string
           user_id: string
         }
         Insert: {
@@ -49,6 +50,7 @@ export type Database = {
           golfer_id: string
           id?: number
           rank_bucket: string
+          tournament_id: string
           user_id: string
         }
         Update: {
@@ -57,6 +59,7 @@ export type Database = {
           golfer_id?: string
           id?: number
           rank_bucket?: string
+          tournament_id?: string
           user_id?: string
         }
         Relationships: [
@@ -98,18 +101,21 @@ export type Database = {
           created_at: string
           id: number
           tiebreaker_score: number
+          tournament_id: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: number
           tiebreaker_score?: number
+          tournament_id: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: number
           tiebreaker_score?: number
+          tournament_id?: string
           user_id?: string
         }
         Relationships: [

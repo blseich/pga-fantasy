@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     const tournament = await getTournament();
     if (user && tournament.tournamentStatus === 'NOT_STARTED') {
-        const { data, error } = await supabase.from('tiebreakers').upsert({ user_id: user?.id, tiebreaker_score }, { onConflict: 'user_id' });
+        const { data, error } = await supabase.from('tiebreakers').upsert({ user_id: user?.id, tournament_id: tournament.id, tiebreaker_score }, { onConflict: 'user_id,tournament_id' });
         if (error) {
             console.log(error);
             return Response.json({ success: false });
