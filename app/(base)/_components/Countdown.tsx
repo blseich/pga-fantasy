@@ -41,10 +41,10 @@ export default function Countdown({ targetDate, pickLink }: CountdownClockProps)
 
   return (
     <>
-        <div className="p-4 border-2 border-brand-blue rounded-lg text-2xl w-10/12 text-center font-mono mb-8">
-        {timeLeft.days}d : {timeLeft.hours}h : {timeLeft.minutes}m : {timeLeft.seconds}s
+        <div className="countdown p-4 border-2 border-brand-blue rounded-lg text-2xl w-10/12 text-center font-mono mb-8">
+          {timeLeft.days}d : {timeLeft.hours}h : {timeLeft.minutes}m : {timeLeft.seconds}s
         </div>
-        <Link className="bg-brand-green p-4 w-10/12 rounded-lg text-black flex gap-2 items-center justify-center" href={pickLink}>Make Your Picks! <ArrowRightCircle className="inline"/></Link> 
+        <Link className="pick-link bg-brand-green p-4 w-10/12 rounded-lg text-black flex gap-2 items-center justify-center" href={pickLink}>Make Your Picks! <ArrowRightCircle className="inline"/></Link> 
     </>
   );
 };

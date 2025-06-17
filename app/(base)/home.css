@@ -21,3 +21,29 @@
         opacity: 0;
     }
 }
+
+.countdown {
+    opacity: 1;
+    transform: translateY(0);
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+    transition-delay: 200ms;
+    transition-timing-function: ease-out;
+    @starting-style {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+.pick-link {
+    opacity: 1;
+    transform: translateY(0);
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+    transition-delay: 400ms;
+    transition-timing-function: ease-out;
+    @starting-style {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
