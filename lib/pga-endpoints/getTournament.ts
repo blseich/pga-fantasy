@@ -50,7 +50,7 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
-const variables = { "ids": ["R2025034"], "fieldId": "R2025034" };
+const variables = { "ids": ["R2025026"], "fieldId": "R2025026" };
 
 const  getPGAData = async function() {
    const res = await fetch('https://orchestrator.pgatour.com/graphql', {
@@ -68,6 +68,7 @@ const  getPGAData = async function() {
 
 export async function getTournament() {
     const { tournaments: [tournament] } = await getPGAData();
+    // tournament.tournamentStatus = 'NOT_STARTED';
     return tournament;
 };
 

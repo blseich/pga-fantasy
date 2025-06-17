@@ -13,7 +13,7 @@ export default async function UserPage({ params }: { params: Params }) {
     const { data } = await supabase.from('profiles').select('first_name, last_name, public_id, tiebreakers:tiebreakers (tiebreaker_score)').eq('public_id', public_id as string).filter('tiebreakers.tournament_id', 'eq', tournament.id);
     const user = data?.[0];
     const tiebreakerScore = data?.[0].tiebreakers?.[0]?.tiebreaker_score || 0;
-    console.log(tiebreakerScore);
+
     return (
         <>
             <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">

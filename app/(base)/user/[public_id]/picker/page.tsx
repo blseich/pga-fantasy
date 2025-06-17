@@ -26,9 +26,9 @@ export default async function PickerPage({ searchParams, params }: { searchParam
 
     const tournament = await getTournament();
     if (tournament.tournamentStatus !== 'NOT_STARTED') {
-        return (<div>
-            <h1>The Tournament Has Started!</h1>
-            <h2>Roster changes are no long permitted</h2>
+        return (<div className="text-center my-8">
+            <h1 className="text-2xl font-bold">Tournament Underway</h1>
+            <h2 className="text-red-400">Roster changes are no long permitted</h2>
         </div>);
     }
     return (

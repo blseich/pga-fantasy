@@ -4,6 +4,7 @@ import LogoSvg from './logo.svg';
 import "../globals.css";
 import { User2, SquareMenu } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
+import OffCanvasNav from "./_components/OffCanvasNav";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -36,9 +37,7 @@ export default async function RootLayout({
           <main className="min-h-screen">
               <nav className="w-full border-b border-b-foreground/10">
                 <div className="max-w-screen-md  py-2 px-4 flex items-center justify-center mx-auto">
-                  <button className="mr-auto text-gray-500">
-                    <SquareMenu className="h-10 w-10" />
-                  </button>
+                  <OffCanvasNav profileLink={`/user/${profileId}`}/>
                   <Link className="flex items-center gap-1" href="/">
                     <LogoSvg />
                     <div className="flex flex-col items-end">

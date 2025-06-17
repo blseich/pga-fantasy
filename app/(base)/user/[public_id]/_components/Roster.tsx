@@ -14,7 +14,6 @@ const PickWrapper = ({ children, index }: PropsWithChildren<{index: number}>) =>
 export default async function RosterPage({ public_id, locked }: { public_id: string, locked: boolean }) {
     const supabase = await createClient();
     const tournament = await getTournament();
-    console.log(tournament.id)
     const { data } = await supabase.from('profiles').select('picks:picks (*)').eq('public_id', public_id as string).filter('picks.tournament_id', 'eq', tournament.id);
     const rosterData = data?.[0].picks || []
     const rankData = await getGolferRanks();
