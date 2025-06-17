@@ -1,4 +1,4 @@
-import { getTournament } from "@/lib/pga-endpoints/getTournament";
+import { getTournament } from "@/lib/pga-endpoints/getPgaEndpoints";
 import { createClient } from "@/utils/supabase/server";
 
 export async function POST(request: Request) {

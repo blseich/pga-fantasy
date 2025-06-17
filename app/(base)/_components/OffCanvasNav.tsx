@@ -1,10 +1,9 @@
 'use client';
 
-import { History, Home, Scale, SquareMenu, TableProperties, User2, X } from "lucide-react";
+import { Home, Scale, SquareMenu, TableProperties, User2, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 
 const Nav = ({ profileLink, open, onClose }: { profileLink: string, open: boolean, onClose: () => void }) => {
     const pathname = usePathname();

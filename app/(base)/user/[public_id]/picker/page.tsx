@@ -5,7 +5,7 @@ import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
 import { PickButton } from "./_components/PickButton";
 import { createClient } from "@/utils/supabase/server";
-import { getField, getTournament } from "@/lib/pga-endpoints/getTournament";
+import { getField, getTournament } from "@/lib/pga-endpoints/getPgaEndpoints";
 
 const GolferImage = ({ src, alt }: { src?: string, alt?: string }) => (
     <div className="overflow-hidden rounded-full w-[75px] bg-brand-blue aspect-square flex flex-col justify-end items-center">
@@ -15,16 +15,16 @@ const GolferImage = ({ src, alt }: { src?: string, alt?: string }) => (
     </div>
 );
 
-export default async function PickerPage({ searchParams, params }: { searchParams: SearchParams, params: Params }) {
+export default async function PickerPage({ searchParams, params }: { searchParams: Promise<{ bucket: string; }>, params: Promise<{ public_id: string}> }) {
     const { bucket } = await searchParams;
     const { public_id } = await params;
+    const tournament = await getTournament();
     const supabase = await createClient();
-    const { data: rosterData } = await supabase.from('picks').select('dg_rank, profiles!inner(public_id)').eq('profiles.public_id', public_id as string || "").eq('rank_bucket', bucket);
+    const { data: rosterData } = await supabase.from('picks').select('dg_rank, profiles!inner(public_id)').eq('profiles.public_id', public_id as string || "").eq('rank_bucket', bucket).eq('tournament_id', tournament.id);
     const selectedDgRank = rosterData?.[0]?.dg_rank;
     const picks = await getGolferRanks(bucket);
     const golfers = await getField();
 
-    const tournament = await getTournament();
     if (tournament.tournamentStatus !== 'NOT_STARTED') {
         return (<div className="text-center my-8">
             <h1 className="text-2xl font-bold">Tournament Underway</h1>
@@ -43,7 +43,7 @@ export default async function PickerPage({ searchParams, params }: { searchParam
                     const [last, first] = pick.player_name.split(', ');
                     const golfer = golfers.find((g) => g.lastName.includes(last) && g.firstName.includes(first));
                     const isPicked = selectedDgRank === pick.dg_rank;
-                    const isPickable = Boolean(golfer);
+                    const isPickable = golfer !== undefined;
 
                     return (
                         <div className="flex items-center gap-2 border-b-2 border-b-gray-500 w-11/12 mb-4 px-2 pb-4" key={pick.player_name}>

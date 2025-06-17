@@ -1,3 +1,5 @@
+import { Field, Leaderboard, Tournament } from "./pgaData.types";
+
 const query = `
 query TournamentsWithField($ids: [ID!], $fieldId: ID!) {
   tournaments(ids: $ids) {
@@ -50,7 +52,7 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
-const variables = { "ids": ["R2025026"], "fieldId": "R2025026" };
+const variables = { "ids": ["R2025034"], "fieldId": "R2025034" };
 
 const  getPGAData = async function() {
    const res = await fetch('https://orchestrator.pgatour.com/graphql', {
@@ -66,18 +68,18 @@ const  getPGAData = async function() {
   return data;
 }
 
-export async function getTournament() {
+export async function getTournament(): Promise<Tournament> {
     const { tournaments: [tournament] } = await getPGAData();
     // tournament.tournamentStatus = 'NOT_STARTED';
     return tournament;
 };
 
-export async function getField() {
+export async function getField(): Promise<Field["players"]> {
     const { field: { players } } = await getPGAData();
     return players;
 };
 
-export async function getLeaderboard() {
+export async function getLeaderboard(): Promise<Leaderboard["players"]> {
   const { leaderboard: { players } } = await getPGAData();
   return players;
 }

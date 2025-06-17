@@ -1,18 +1,17 @@
 import { createClient } from "@/utils/supabase/server";
-import { Params } from "next/dist/server/request/params";
 import Roster from './_components/Roster';
 import Tiebreaker from "./_components/Tiebreaker";
 import { UserCircle2 } from "lucide-react";
-import { getTournament } from "@/lib/pga-endpoints/getTournament";
+import { getTournament } from "@/lib/pga-endpoints/getPgaEndpoints";
 import './user.css';
 
-export default async function UserPage({ params }: { params: Params }) {
+export default async function UserPage({ params }: { params: Promise<{ public_id: string }> }) {
     const { public_id } = await params;
     const supabase = await createClient();
     const tournament = await getTournament();
     const { data } = await supabase.from('profiles').select('first_name, last_name, public_id, tiebreakers:tiebreakers (tiebreaker_score)').eq('public_id', public_id as string).filter('tiebreakers.tournament_id', 'eq', tournament.id);
     const user = data?.[0];
-    const tiebreakerScore = data?.[0].tiebreakers?.[0]?.tiebreaker_score || 0;
+    const tiebreakerScore = data?.[0].tiebreakers?.[0]?.tiebreaker_score;
 
     return (
         <>

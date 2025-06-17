@@ -1,7 +1,6 @@
-import { getLeaderboard, getTournament } from "@/lib/pga-endpoints/getTournament";
+import { getLeaderboard, getTournament } from "@/lib/pga-endpoints/getPgaEndpoints";
 import { createClient } from "@/utils/supabase/server";
 import { TableProperties } from "lucide-react";
-import { Fragment } from "react";
 import LeaderboardDisplay from "./_components/LeaderboardDisplay";
 
 export default async function LeaderboardPage() {
@@ -17,7 +16,7 @@ export default async function LeaderboardPage() {
                 <TableProperties className="h-[36px] w-[36px] text-gray-300"/>
                 <h1 className="text-4xl font-bold">Leaderboard</h1>
             </div>
-            <LeaderboardDisplay leaderboard={leaderboard} picks={data} user_id={user?.id} />
+            <LeaderboardDisplay leaderboard={leaderboard} picks={data || []} user_id={user?.id} />
         </>
     );
 }

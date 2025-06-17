@@ -1,5 +1,11 @@
 import type { NextConfig } from "next";
 
+type Rule = {
+  test?: {
+    test?: (t: string) => void
+  }
+}
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -8,7 +14,7 @@ const nextConfig: NextConfig = {
     ]
   },
   webpack(config) {
-    const fileLoaderRule = config.module.rules.find((rule) =>
+    const fileLoaderRule = config.module.rules.find((rule: Rule) =>
       rule.test?.test?.(".svg")
     );
 

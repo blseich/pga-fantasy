@@ -1,5 +1,6 @@
 'use client';
 
+import { Leaderboard } from "@/lib/pga-endpoints/pgaData.types";
 import { useState } from "react";
 
 const CutLine = () => (
@@ -10,7 +11,16 @@ const CutLine = () => (
     </div>
 );
 
-export default function LeaderboardDisplay({ leaderboard, picks, user_id }: {leaderboard: any, picks: any, user_id?: string }) {
+type LeadboardPick = {
+    user_id: string;
+    golfer_id: string;
+    profile: {
+        first_name: string | null;
+        last_name: string | null;
+    };
+};
+
+export default function LeaderboardDisplay({ leaderboard, picks, user_id }: {leaderboard: Leaderboard["players"], picks: LeadboardPick[], user_id?: string }) {
     const [filter, setFilter] = useState('all');
 
     let filteredLeaderboard = leaderboard;
@@ -22,15 +32,15 @@ export default function LeaderboardDisplay({ leaderboard, picks, user_id }: {lea
             <div className="flex justify-center gap-8 my-8 text-gray-500">
                 <label className="relative flex flex-col gap-2 justify-center items-center cursor-pointer select-none">
                     <input className="peer sr-only" type="radio" name="filters" onClick={() => setFilter('all')} defaultChecked />
-                    <span className="text-lg peer-checked:text-brand-green peer-checked:border-b-2 border-brand-blue">All</span>
+                    <span className="text-lg peer-checked:text-brand-green peer-checked:border-b-2 border-brand-blue peer-checked:text-xl peer-checked:text-xl">All</span>
                 </label>
                 <label className="relative flex flex-col gap-2 justify-center items-center cursor-pointer select-none">
                     <input className="peer sr-only" type="radio" name="filters" onClick={() => setFilter('picked')} />
-                    <span className="text-lg peer-checked:text-brand-green peer-checked:border-b-2 border-brand-blue">Picked</span>
+                    <span className="text-lg peer-checked:text-brand-green peer-checked:border-b-2 border-brand-blue peer-checked:text-xl">Picked</span>
                 </label>
                 <label className="relative flex flex-col gap-2 justify-center items-center cursor-pointer select-none">
                     <input className="peer sr-only" type="radio" name="filters" onClick={() => setFilter('mine')} />
-                    <span className="text-lg peer-checked:text-brand-green peer-checked:border-b-2 border-brand-blue">Mine</span>
+                    <span className="text-lg peer-checked:text-brand-green peer-checked:border-b-2 border-brand-blue peer-checked:text-xl">Mine</span>
                 </label>
             </div>
             <div className="px-4">

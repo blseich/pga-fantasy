@@ -1,6 +1,6 @@
-import { getLeaderboard, getTournament } from "@/lib/pga-endpoints/getTournament";
+import { getLeaderboard, getTournament } from "@/lib/pga-endpoints/getPgaEndpoints";
 import { createClient } from "@/utils/supabase/server";
-import { Scale } from "lucide-react";
+import { EyeOff, Scale } from "lucide-react";
 import { Fragment } from "react";
 
 const numericScore = (score: string) => (
@@ -12,7 +12,7 @@ export default async function TiebreakerPage() {
     const tournament = await getTournament();
     const { data } = await supabase.from('tiebreakers').select('tiebreaker_score, profile:profiles (first_name,last_name)').eq('tournament_id', tournament.id);
     const leaderboard = await getLeaderboard();
-    const leadingScoreValue = numericScore(leaderboard[0].scoringData.total || "0");
+    const leadingScoreValue = numericScore(leaderboard[0]?.scoringData.total || "0");
     return (
         <>
             <div className="flex flex-col items-center justify-center mx-auto my-8 gap-2">
@@ -25,7 +25,7 @@ export default async function TiebreakerPage() {
                     .map(({ tiebreaker_score, profile: {first_name, last_name} }) => (
                         <Fragment key={`${first_name}_${last_name}`}>
                             <div className="p-4">{first_name} {last_name}</div>
-                            <div className="p-4 text-center">{tiebreaker_score}</div>
+                            <div className="p-4 text-center">{tournament.tournamentStatus === 'NOT_STARTED' ? <EyeOff /> :  tiebreaker_score}</div>
                             <div className="h-[2px] bg-gray-500 col-span-2 mx-2"/>
                         </Fragment>
                     ))}

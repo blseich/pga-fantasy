@@ -1,4 +1,4 @@
-import { getLeaderboard } from "@/lib/pga-endpoints/getTournament";
+import { getLeaderboard } from "@/lib/pga-endpoints/getPgaEndpoints";
 
 const query = `
 query TournamentsWithField($ids: [ID!], $fieldId: ID!) {

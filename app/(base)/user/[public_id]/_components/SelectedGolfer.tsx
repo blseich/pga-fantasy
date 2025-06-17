@@ -2,7 +2,26 @@ import { ArrowRightLeft, LockKeyhole } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default  function SelectedGolfer({ golfer, rank_bucket, rank, swapLink, scoringData }) {
+type SelectedGolferProps = {
+    rank_bucket: string;
+    rank: {
+        dg_rank: string;
+        owgr_rank: string;
+    }
+    swapLink: string;
+    scoringData?: {
+        score: string;
+        thru: string;
+        total: string;
+    }
+    golfer: {
+        id: string;
+        firstName: string;
+        lastName: string;
+    }
+}
+
+export default  function SelectedGolfer({ golfer, rank_bucket, rank, swapLink, scoringData }: SelectedGolferProps) {
     return (
         <div className="border-b-2 w-full mb-4 flex gap-2 pb-2 items-center">
             <div className="relative h-[108px] w-[108px] flex flex-col justify-end overflow-hidden">
@@ -20,8 +39,8 @@ export default  function SelectedGolfer({ golfer, rank_bucket, rank, swapLink, s
                 </div>
             </div>
             <div className="w-[80px] h-full mr-2 text-center">
-                {scoringData.score ? (<>
-                    {scoringData.score === '-' ? <div className="text-sm text-red-400">CUT</div> : <div className="text-sm">{scoringData.score} ({scoringData.thru})</div> }
+                {scoringData && scoringData.score ? (<>
+                    {scoringData.score === "-" ? <div className="text-sm text-red-400">CUT</div> : <div className="text-sm">{scoringData.score} ({scoringData.thru})</div> }
                     <div className="text-lg text-brand-green p-2">{scoringData.total}</div>
                 </>) : (<>
                     <Link href={swapLink} className="bg-yellow-300 text-black px-4 rounded-lg mx-auto py-2 flex w-fit"><ArrowRightLeft className="inline"/></Link>

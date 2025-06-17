@@ -2,12 +2,12 @@ import { createClient } from '@/utils/supabase/server';
 import './home.css';
 import Rankings from './_components/Rankings';
 import { Tables } from '@/utils/supabase/database.types';
-import { Trophy } from 'lucide-react';
-import { getLeaderboard, getTournament } from '@/lib/pga-endpoints/getTournament';
+import { getLeaderboard, getTournament } from '@/lib/pga-endpoints/getPgaEndpoints';
 import Image from 'next/image';
 import Countdown from './_components/Countdown';
+import { Leaderboard } from '@/lib/pga-endpoints/pgaData.types';
 
-type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number } | null }
+type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number }[] | null }
 type PickWithDetails = Tables<'picks'> & {
   golfer: {
     first_name: string,
@@ -35,11 +35,25 @@ const numericScore = (score: string) => (
   score === 'E' ? 0 : Number.parseInt(score)
 );
 
-const generateRankings = (users: UserWithPicks[], leaderboard): UserWithPickDetails[] => {
+const defaultGolfer = {
+  player: {
+    id: '',
+    firstName: '',
+    lastName: ''
+  },
+  scoringData: {
+    position: 'WD',
+    score: '-',
+    thru: '-',
+    total: 'E',
+  }
+};
+
+const generateRankings = (users: UserWithPicks[], leaderboard: Leaderboard["players"]): UserWithPickDetails[] => {
   const leadingScore = Number.parseInt(leaderboard[0].scoringData.total);
   const rankings = users.map((user) => {
     const picksWithScores = user.picks.map((pick) => {
-      const golfer = leaderboard.find((entry) => entry.player?.id === pick.golfer_id);
+      const golfer = leaderboard.find((entry) => entry.player?.id === pick.golfer_id) || defaultGolfer;
       return {
         ...pick,
         golfer: {
@@ -70,7 +84,7 @@ const generateRankings = (users: UserWithPicks[], leaderboard): UserWithPickDeta
       }, { value: 0, displayValue: 'E'})
     };
   });
-  return rankings.sort((userA, userB) => userA.score.value - userB.score.value || Math.abs(userA.tiebreakers?.tiebreaker_score || 0 - leadingScore) - Math.abs(userB.tiebreakers?.tiebreaker_score || 0 - leadingScore));
+  return rankings.sort((userA, userB) => userA.score.value - userB.score.value || Math.abs(userA.tiebreakers?.[0].tiebreaker_score || 0 - leadingScore) - Math.abs(userB.tiebreakers?.[0].tiebreaker_score || 0 - leadingScore));
 }
 
 const getTargetDate = (date: string) => {

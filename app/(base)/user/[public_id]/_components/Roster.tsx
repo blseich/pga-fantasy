@@ -3,7 +3,7 @@ import { getGolferRanks } from "@/lib/getGolferRanks";
 import { createClient } from "@/utils/supabase/server";
 import SelectedGolfer from "./SelectedGolfer";
 import UnselectedGolfer from "./UnselectedGolfer";
-import { getField, getLeaderboard, getTournament } from "@/lib/pga-endpoints/getTournament";
+import { getField, getLeaderboard, getTournament } from "@/lib/pga-endpoints/getPgaEndpoints";
 
 const PickWrapper = ({ children, index }: PropsWithChildren<{index: number}>) => (
     <div className="pick" style={{["--i" as any]: index}}>
@@ -31,15 +31,23 @@ export default async function RosterPage({ public_id, locked }: { public_id: str
                             </PickWrapper>
                         );
                     }
-                    const rank = rankData.find((rank) => rank.dg_rank === pick.dg_rank);
-                    const golfer = golfers.find((golfer) => (golfer.player || golfer)?.id === pick.golfer_id);
+                    const rank = rankData.find((rank) => rank.dg_rank === pick.dg_rank) || { dg_rank: '-', owgr_rank: '-' };
+                    const golfer = golfers.find((golfer) => {
+                        if ("player" in golfer) {
+                            return golfer.player.id === pick.golfer_id
+                        } else { 
+                            return golfer.id === pick.golfer_id
+                        }
+                    });
+
+                    if (!golfer) return null;
 
                     return (
                         <PickWrapper index={i} key={`${public_id}:${pick.golfer_id}`}>
                             <SelectedGolfer
                                 swapLink={swapLink}
-                                golfer={golfer.player || golfer}
-                                scoringData={golfer.scoringData || {}}
+                                golfer={"player" in golfer ? golfer.player : golfer}
+                                scoringData={"scoringData" in golfer ? golfer.scoringData : undefined}
                                 rank_bucket={pick.rank_bucket}
                                 rank={rank}
                             />

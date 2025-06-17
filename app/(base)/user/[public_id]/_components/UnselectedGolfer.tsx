@@ -1,7 +1,7 @@
 import { Plus, User2 } from "lucide-react";
 import Link from "next/link";
 
-export default function UnselectedGolfer({ rank_bucket, swapLink }) {
+export default function UnselectedGolfer({ rank_bucket, swapLink }: { rank_bucket: string, swapLink: string }) {
     return (
         <div className="border-b-2 w-full mb-4 flex gap-2 pb-2 items-end">
             <div className="relative h-[108px] w-[108px] flex flex-col justify-end overflow-hidden">
