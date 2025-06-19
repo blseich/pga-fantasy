@@ -1,10 +1,14 @@
 .card {
     opacity: 1;
     transform: translateY(0);
-    transition-property: width, padding, opacity, transform;
+    transition-property: width, padding, box-shadow, opacity, transform;
     transition-duration: 200ms, 200ms, 1s;
     transition-delay: 50ms, 50ms, calc(200ms * var(--i));
     transition-timing-function: ease-in-out, ease-in-out, ease-out;
+
+    &.highlighted {
+        box-shadow: 0 0 10px 5px inset theme('colors.brand-green.DEFAULT');
+    }
 
     @starting-style {
         opacity: 0;

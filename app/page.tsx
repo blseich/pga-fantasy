@@ -1,13 +1,13 @@
 import { createClient } from '@/utils/supabase/server';
 import './home.css';
-import Rankings from './_components/Rankings';
+import Rankings from './_components/Rankings/index';
 import { Tables } from '@/utils/supabase/database.types';
 import { getLeaderboard, getTournament } from '@/lib/pga-endpoints/getPgaEndpoints';
 import Image from 'next/image';
 import Countdown from './_components/Countdown';
 import { Leaderboard } from '@/lib/pga-endpoints/pgaData.types';
 
-type UserWithPicks = Pick<Tables<'profiles'>, 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number }[] | null }
+type UserWithPicks = Pick<Tables<'profiles'>, 'user_id' | 'first_name' | 'last_name' | 'public_id'> & { picks: Tables<'picks'>[] } & { tiebreakers: { tiebreaker_score: number }[] | null }
 type PickWithDetails = Tables<'picks'> & {
   golfer: {
     first_name: string,
@@ -28,7 +28,7 @@ export type UserWithPickDetails = Pick<Tables<'profiles'>, 'first_name' | 'last_
       value: number,
       displayValue: string,
     };
-    
+    me: boolean;
 }
 
 const numericScore = (score: string) => (
@@ -50,7 +50,7 @@ const defaultGolfer = {
   }
 };
 
-const generateRankings = (users: UserWithPicks[], leaderboard: Leaderboard["players"]): UserWithPickDetails[] => {
+const generateRankings = (users: UserWithPicks[], leaderboard: Leaderboard["players"], activeUser: { id: string } | null): UserWithPickDetails[] => {
   const leadingScore = Number.parseInt(leaderboard[0].scoringData.total);
   const rankings = users.map((user) => {
     const picksWithScores = user.picks.map((pick) => {
@@ -75,6 +75,7 @@ const generateRankings = (users: UserWithPicks[], leaderboard: Leaderboard["play
     }).sort((pickA, pickB) => pickA.score.overall.value - pickB.score.overall.value);
     return {
       ...user,
+      me: user.user_id === activeUser?.id,
       picks: picksWithScores,
       score: picksWithScores.slice(0, 3).reduce((acc, pick) => {
         const newScore = acc.value + pick.score.overall.value;
@@ -113,11 +114,9 @@ export default async function Home() {
         <h1 className="text-4xl font-bold text-center">{tournament.tournamentName}</h1>
         <h2 className="text-center font-bold">{tournament.courses[0].courseName}</h2>
       </div>
-      <div className="w-full p-4 flex flex-col gap-4 items-center">
       {tournament.tournamentStatus === 'NOT_STARTED'
           ? <Countdown targetDate={getTargetDate(tournament.displayDate)} pickLink={`/user/${users?.find((u) => u.user_id === user?.id)?.public_id}`}/>
-          : <Rankings users={generateRankings(users || [], leaderboard)} />}
-      </div>
+          : <Rankings users={generateRankings(users || [], leaderboard, user)} />}
     </>
   );
 }
