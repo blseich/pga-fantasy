@@ -79,7 +79,22 @@ export async function getField(): Promise<Field["players"]> {
     return players;
 };
 
+const formatTeeTime = (teeTime: number) => (
+  new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    hour: "numeric",
+    minute: "numeric",
+  }).format(teeTime)
+);
+
 export async function getLeaderboard(): Promise<Leaderboard["players"]> {
   const { leaderboard: { players } } = await getPGAData();
-  return players;
+  const moddedPlayers = players.map((player: any) => ({
+    ...player,
+    scoringData: {
+      ...player.scoringData,
+      teeTime: player.scoringData.teeTime === null ? null : formatTeeTime(player.scoringData.teeTime)
+    }
+  }))
+  return moddedPlayers;
 }

@@ -42,6 +42,7 @@ const defaultGolfer = {
     lastName: ''
   },
   scoringData: {
+    teeTime: null,
     position: 'WD',
     score: '-',
     thru: '-',
@@ -62,7 +63,9 @@ const generateRankings = (users: UserWithPicks[], leaderboard: Leaderboard["play
           headshot: `https://pga-tour-res.cloudinary.com/image/upload/headshots_${golfer.player.id}.png`,
         },
         score: {
-          today: golfer.scoringData.position === 'CUT' ? 'CUT' : `${golfer.scoringData.score} (${golfer.scoringData.thru})`,
+          today: golfer.scoringData.position === 'CUT' ? 'CUT' :
+            golfer.scoringData.thru === "" ? golfer.scoringData.teeTime || '' :
+            `${golfer.scoringData.score} (${golfer.scoringData.thru})`,
           overall: {
             displayValue: golfer.scoringData.total,
             value: numericScore(golfer.scoringData.total),
@@ -84,7 +87,7 @@ const generateRankings = (users: UserWithPicks[], leaderboard: Leaderboard["play
       }, { value: 0, displayValue: 'E'})
     };
   });
-  return rankings.sort((userA, userB) => userA.score.value - userB.score.value || Math.abs(userA.tiebreakers?.[0].tiebreaker_score || 0 - leadingScore) - Math.abs(userB.tiebreakers?.[0].tiebreaker_score || 0 - leadingScore));
+  return rankings.sort((userA, userB) => userA.score.value - userB.score.value || Math.abs(userA.tiebreakers?.[0]?.tiebreaker_score || 0 - leadingScore) - Math.abs(userB.tiebreakers?.[0]?.tiebreaker_score || 0 - leadingScore));
 }
 
 const getTargetDate = (date: string) => {

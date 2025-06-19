@@ -1,11 +1,11 @@
 import { Geist } from "next/font/google";
 import Link from "next/link";
 import LogoSvg from './logo.svg';
-import "../globals.css";
+import "./globals.css";
 import { User2, SquareMenu } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import OffCanvasNav from "./_components/OffCanvasNav";
-import { signOutAction } from "../actions";
+import { signOutAction } from "./actions";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -22,7 +22,7 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-export default async function RootLayout({
+export default async function BaseLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
