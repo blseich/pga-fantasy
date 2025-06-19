@@ -12,6 +12,7 @@ export default async function LoginPage() {
                 <br/>
                 <button className="bg-brand-green text-black p-2 rounded-lg w-full" formAction={signInAction}>Sign In</button>
                 <Link href="/sign-up" className="underline underline-offset-4">Sign Up</Link>
+                <Link href="/forgot-password" className="underline underline-offset-4 text-sm text-brand-blue">Forgot Password</Link>
             </form>
         </div>
     )
