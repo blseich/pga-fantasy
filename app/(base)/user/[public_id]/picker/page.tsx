@@ -1,7 +1,5 @@
 import { getGolferRanks } from "@/lib/getGolferRanks";
 import { CheckSquare, User, X } from "lucide-react";
-import { Params } from "next/dist/server/request/params";
-import { SearchParams } from "next/dist/server/request/search-params";
 import Image from "next/image";
 import { PickButton } from "./_components/PickButton";
 import { createClient } from "@/utils/supabase/server";

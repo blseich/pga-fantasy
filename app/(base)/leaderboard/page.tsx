@@ -17,7 +17,7 @@ export default async function LeaderboardPage() {
                 <h1 className="text-4xl font-bold">Leaderboard</h1>
             </div>
             {tournament.tournamentStatus === 'NOT_STARTED' ? (
-                <div className="text-center my-8">
+                <div className="text-center my-8 px-4">
                     <h1 className="text-2xl font-bold">Tournament Not Started</h1>
                     <h2 className="text-red-400">Leaderboard will appear after selections are locked for this tournament</h2>
                 </div>

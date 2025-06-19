@@ -5,6 +5,7 @@ import "../globals.css";
 import { User2, SquareMenu } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 import OffCanvasNav from "./_components/OffCanvasNav";
+import { signOutAction } from "../actions";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -54,10 +55,11 @@ export default async function RootLayout({
                 {children}
               </div>
           </main>
-          <footer className="w-full flex items-center justify-center border-t py-2 px-4">
+          <footer className="w-full flex items-center justify-between border-t py-2 px-4">
             <p>
-              Built by Seich
+              Built by <span className="text-brand-blue">Seich</span>
             </p>
+            <button className="underline" onClick={signOutAction}>Sign Out</button>
           </footer>
       </body>
     </html>
