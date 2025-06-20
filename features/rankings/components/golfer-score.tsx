@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { type UserWithPickDetails } from '@/app/page';
+import { type UserWithPickDetails } from '@/types/db-fetched-types';
 
 export default function GolferScore({
   golfer,

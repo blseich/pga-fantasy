@@ -1,4 +1,4 @@
-import { type UserWithPickDetails } from '@/app/page';
+import { type UserWithPickDetails } from '@/types/db-fetched-types';
 
 export default function RankHeading({
   first_name,

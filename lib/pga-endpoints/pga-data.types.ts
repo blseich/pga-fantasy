@@ -22,7 +22,7 @@ export type Leaderboard = {
     leaderboardSortOrder: number;
     player: Player;
     scoringData: {
-      teeTime: string;
+      teeTime: string | null;
       total: string;
       thru: string;
       score: string;
