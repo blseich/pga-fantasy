@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-import BallSVG from '../../../../../ball.svg';
-import ClubSVG from '../../../../../club.svg';
+import BallSVG from '../../../../../../ball.svg';
+import ClubSVG from '../../../../../../club.svg';
 
 const postPick = async (golfer_id: string, bucket: string, rank: string) => {
   const res = await fetch('/pick', {

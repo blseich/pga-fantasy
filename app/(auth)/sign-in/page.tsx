@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { signInAction } from '@/app/actions';
+import { signInAction } from '@/app/(base)/actions';
 
 import GolfBallSvg from './53678130-golf-ball-on-tee.svg';
 

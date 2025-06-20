@@ -3,9 +3,9 @@ import { UserCircle2 } from 'lucide-react';
 import { getTournament } from '@/lib/pga-endpoints/get-pga-endpoints';
 import { createClient } from '@/utils/supabase/server';
 
-import Tiebreaker from './_stuff/tiebreaker';
+import Tiebreaker from './_components/tiebreaker';
 import './user.css';
-import Headline from '@/app/_components/headline';
+import Headline from '@/app/(base)/_components/headline';
 import RosterView from '@/features/roster-view';
 
 export default async function UserPage({

@@ -1,4 +1,4 @@
-import { signUpAction } from '@/app/actions';
+import { signUpAction } from '@/app/(base)/actions';
 import { FormMessage, Message } from '@/components/form-message';
 
 export default async function SignUpPage(props: {
