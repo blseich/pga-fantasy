@@ -25,6 +25,9 @@ export default function Score({ scoringData }: { scoringData: ScoringData }) {
         ACTIVE: (
           <ScoreDisplay score={scoringData.score} thru={scoringData.thru} />
         ),
+        COMPLETE: (
+          <ScoreDisplay score={scoringData.score} thru={scoringData.thru} />
+        ),
         BETWEEN_ROUNDS: <TeeTimeDisplay teeTime={scoringData.teeTime || ''} />,
         CUT: <CutDisplay />,
         WITHRDAWN: <WithdrawnDisplay />,

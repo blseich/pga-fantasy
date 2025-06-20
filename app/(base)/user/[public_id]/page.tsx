@@ -1,12 +1,11 @@
 import { UserCircle2 } from 'lucide-react';
 
-import { getTournament } from '@/lib/pga-endpoints/get-pga-endpoints';
 import { createClient } from '@/utils/supabase/server';
 
-import Tiebreaker from './_components/tiebreaker';
 import './user.css';
 import Headline from '@/app/(base)/_components/headline';
 import RosterView from '@/features/roster-view';
+import TiebreakerView from '@/features/tiebreaker-view';
 
 export default async function UserPage({
   params,
@@ -15,16 +14,11 @@ export default async function UserPage({
 }) {
   const { public_id } = await params;
   const supabase = await createClient();
-  const tournament = await getTournament();
   const { data } = await supabase
     .from('profiles')
-    .select(
-      'first_name, last_name, public_id, tiebreakers:tiebreakers (tiebreaker_score)',
-    )
-    .eq('public_id', public_id as string)
-    .filter('tiebreakers.tournament_id', 'eq', tournament.id);
+    .select('first_name, last_name, public_id')
+    .eq('public_id', public_id as string);
   const user = data?.[0];
-  const tiebreakerScore = data?.[0].tiebreakers?.[0]?.tiebreaker_score;
 
   return (
     <>
@@ -33,10 +27,7 @@ export default async function UserPage({
         Icon={UserCircle2}
       />
       <h1 className="mb-4 mt-8 text-center text-2xl font-black">Tiebreaker</h1>
-      <Tiebreaker
-        initScore={tiebreakerScore}
-        locked={tournament.tournamentStatus !== 'NOT_STARTED'}
-      />
+      <TiebreakerView public_id={public_id} />
       <RosterView public_id={public_id} />
     </>
   );
