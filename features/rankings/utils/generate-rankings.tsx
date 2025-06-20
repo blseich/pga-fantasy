@@ -32,8 +32,11 @@ type UserWithPicksAndTiebreakerScore = Omit<
   tiebreakers: Pick<Tables<'tiebreakers'>, 'tiebreaker_score'>[];
 };
 
-const numericScore = (score: string) =>
-  score === 'E' ? 0 : Number.parseInt(score);
+const numericScore = (score: string) => {
+  if (score === '-') return Number.POSITIVE_INFINITY;
+  if (score === 'E') return 0;
+  return Number.parseInt(score);
+};
 
 const displayScore = (score: number) =>
   score === 0 ? 'E' : score > 0 ? `+${score}` : `${score}`;
@@ -45,6 +48,7 @@ const buildGolferScore = (
   if (golfer.scoringData.thru !== '')
     today = `${golfer.scoringData.score} (${golfer.scoringData.thru})`;
   if (golfer.scoringData.position === 'CUT') today = 'CUT';
+  if (golfer.scoringData.position === 'WD') today = 'WD';
 
   return {
     today,

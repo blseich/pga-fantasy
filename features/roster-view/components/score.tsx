@@ -14,6 +14,10 @@ const TeeTimeDisplay = ({ teeTime }: { teeTime: string }) => (
 
 const CutDisplay = () => <div className="text-sm text-red-400">CUT</div>;
 
+const WithdrawnDisplay = () => (
+  <div className="text-sml text-red-400">WITHDREW</div>
+);
+
 export default function Score({ scoringData }: { scoringData: ScoringData }) {
   return (
     <>
@@ -23,6 +27,7 @@ export default function Score({ scoringData }: { scoringData: ScoringData }) {
         ),
         BETWEEN_ROUNDS: <TeeTimeDisplay teeTime={scoringData.teeTime || ''} />,
         CUT: <CutDisplay />,
+        WITHRDAWN: <WithdrawnDisplay />,
       }[scoringData.playerState] || null}
       <div className="p-2 text-lg text-brand-green">{scoringData.total}</div>
     </>

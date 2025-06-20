@@ -94,6 +94,7 @@ module.exports = defineConfig([
           ignoreMiddleExtensions: true,
         },
       ],
+      'tailwindcss/no-custom-classname': 'off',
     },
   },
   {
