@@ -3,7 +3,7 @@ import { UserCircle2 } from 'lucide-react';
 import { getTournament } from '@/lib/pga-endpoints/get-pga-endpoints';
 import { createClient } from '@/utils/supabase/server';
 
-import Tiebreaker from './_components/tiebreaker';
+import Tiebreaker from '@/app/user/[public_id]/_components/tiebreaker';
 import './user.css';
 import Headline from '@/app/_components/headline';
 import RosterView from '@/features/roster-view';
