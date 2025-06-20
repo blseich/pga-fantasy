@@ -3,9 +3,10 @@ import { UserCircle2 } from 'lucide-react';
 import { getTournament } from '@/lib/pga-endpoints/get-pga-endpoints';
 import { createClient } from '@/utils/supabase/server';
 
-import Roster from './_components/roster';
 import Tiebreaker from './_components/tiebreaker';
 import './user.css';
+import Headline from '@/app/_components/headline';
+import RosterView from '@/features/roster-view';
 
 export default async function UserPage({
   params,
@@ -27,22 +28,16 @@ export default async function UserPage({
 
   return (
     <>
-      <div className="mx-auto my-8 flex flex-col items-center justify-center gap-2">
-        <UserCircle2 className="size-[36px] text-gray-300" />
-        <h1 className="text-4xl font-bold">
-          {user?.first_name} {user?.last_name}
-        </h1>
-      </div>
+      <Headline
+        title={`${user?.first_name} ${user?.last_name}`}
+        Icon={UserCircle2}
+      />
       <h1 className="mb-4 mt-8 text-center text-2xl font-black">Tiebreaker</h1>
       <Tiebreaker
         initScore={tiebreakerScore}
         locked={tournament.tournamentStatus !== 'NOT_STARTED'}
       />
-      <h2 className="mb-4 mt-8 text-center text-2xl font-black">Roster</h2>
-      <Roster
-        public_id={public_id as string}
-        locked={tournament.tournamentStatus !== 'NOT_STARTED'}
-      />
+      <RosterView public_id={public_id} />
     </>
   );
 }

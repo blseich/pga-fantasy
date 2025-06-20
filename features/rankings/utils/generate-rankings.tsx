@@ -19,6 +19,7 @@ const defaultGolfer = {
     score: '-',
     thru: '-',
     total: 'E',
+    playerState: 'WITHDRAWN',
   },
 };
 

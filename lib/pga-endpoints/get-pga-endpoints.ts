@@ -26,6 +26,7 @@ query TournamentsWithField($ids: [ID!], $fieldId: ID!) {
           thru
           score
           position
+          playerState
         }
       }
     }

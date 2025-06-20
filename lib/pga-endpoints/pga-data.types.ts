@@ -27,6 +27,7 @@ export type Leaderboard = {
       thru: string;
       score: string;
       position: string;
+      playerState: string;
     };
   }[];
 };
