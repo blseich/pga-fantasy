@@ -28,8 +28,13 @@ const getTimeLeft = (target: Date): TimeLeft => {
   };
 };
 
-export default function Countdown({ targetDate, pickLink }: CountdownClockProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => getTimeLeft(new Date(targetDate)));
+export default function Countdown({
+  targetDate,
+  pickLink,
+}: CountdownClockProps) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() =>
+    getTimeLeft(new Date(targetDate)),
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,10 +46,16 @@ export default function Countdown({ targetDate, pickLink }: CountdownClockProps)
 
   return (
     <>
-        <div className="countdown py-4 px-2 border-2 border-brand-blue rounded-lg text-2xl w-10/12 text-center font-mono mb-8">
-          {timeLeft.days}d : {timeLeft.hours}h : {timeLeft.minutes}m : {timeLeft.seconds}s
-        </div>
-        <Link className="pick-link bg-brand-green p-4 w-10/12 rounded-lg text-black flex gap-2 items-center justify-center" href={pickLink}>Make Your Picks! <ArrowRightCircle className="inline"/></Link> 
+      <div className="countdown mb-8 w-10/12 rounded-lg border-2 border-brand-blue px-2 py-4 text-center font-mono text-2xl">
+        {timeLeft.days}d : {timeLeft.hours}h : {timeLeft.minutes}m :{' '}
+        {timeLeft.seconds}s
+      </div>
+      <Link
+        className="pick-link flex w-10/12 items-center justify-center gap-2 rounded-lg bg-brand-green p-4 text-black"
+        href={pickLink}
+      >
+        Make Your Picks! <ArrowRightCircle className="inline" />
+      </Link>
     </>
   );
-};
+}

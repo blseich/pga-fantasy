@@ -1,7 +1,11 @@
 import path from 'path';
+
 import csv from 'csvtojson';
 
-const rankingsPath = path.join(process.cwd(), 'data/datagolf_rankings_current.csv');
+const rankingsPath = path.join(
+  process.cwd(),
+  'data/datagolf_rankings_current.csv',
+);
 
 let cachedData: any = null;
 
@@ -13,9 +17,11 @@ type DataGolferRank = {
   owgr_rank: string;
   owgr_change: string;
   dg_index: string;
-}
+};
 
-export async function  getGolferRanks(bucket:string = 'all'): Promise<DataGolferRank[]> {
+export async function getGolferRanks(
+  bucket: string = 'all',
+): Promise<DataGolferRank[]> {
   if (cachedData) {
     return cachedData[bucket];
   }
@@ -31,7 +37,7 @@ export async function  getGolferRanks(bucket:string = 'all'): Promise<DataGolfer
     '11-20': elevenToTwenty,
     '21-40': twentyOneToForty,
     '41+': fortyOnePlus,
-    'all': allRecords,
+    all: allRecords,
   };
   return cachedData[bucket];
 }
