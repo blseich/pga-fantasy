@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const Nav = ({
   profileLink,
@@ -109,16 +109,16 @@ export default function OffCanvasNav({ profileLink }: { profileLink: string }) {
     };
   }, [open]);
 
+  const closeButton = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
   return (
     <>
       <button className="mr-auto text-gray-500" onClick={() => setOpen(true)}>
         <SquareMenu className="size-10" />
       </button>
-      <Nav
-        profileLink={profileLink}
-        open={open}
-        onClose={() => setOpen(false)}
-      />
+      <Nav profileLink={profileLink} open={open} onClose={closeButton} />
     </>
   );
 }
