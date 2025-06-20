@@ -1,7 +1,7 @@
 import { ArrowRightCircle } from 'lucide-react';
 import Link from 'next/link';
 
-import getProfileLink from '../utils/get-user-public-id';
+import getProfileLink from '@/utils/db/get-profile-link';
 
 export default async function Countdown() {
   return (

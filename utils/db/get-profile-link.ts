@@ -10,5 +10,5 @@ export default async function getProfileLink() {
     .select('public_id')
     .eq('user_id', authUser?.id || '')
     .single();
-  return `user/${profile?.public_id}`;
+  return `/user/${profile?.public_id}`;
 }

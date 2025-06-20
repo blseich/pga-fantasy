@@ -1,31 +1,14 @@
 'use client';
 
-import {
-  Home,
-  Scale,
-  SquareMenu,
-  TableProperties,
-  User2,
-  X,
-} from 'lucide-react';
+import { Home, Scale, TableProperties, User2, X } from 'lucide-react';
 import Link from 'next/link';
+import { use } from 'react';
+import { NavContext } from './nav-context';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
 
-const Nav = ({
-  profileLink,
-  open,
-  onClose,
-}: {
-  profileLink: string;
-  open: boolean;
-  onClose: () => void;
-}) => {
+export default function NavDrawer() {
   const pathname = usePathname();
-
-  useEffect(() => {
-    onClose();
-  }, [onClose, pathname]);
+  const { open, closeNav, profileLink } = use(NavContext);
 
   return (
     <>
@@ -33,7 +16,7 @@ const Nav = ({
         className={`fixed top-0 z-20 h-screen w-11/12 border-r-8 border-r-brand-green bg-black text-white ${open ? 'left-0' : '-left-full'} transition-all duration-300 ease-in-out`}
       >
         <div className="flex w-full justify-end p-4">
-          <button className="size-12 text-brand-green" onClick={onClose}>
+          <button className="size-12 text-brand-green" onClick={closeNav}>
             <X className="size-full" />
           </button>
         </div>
@@ -88,37 +71,8 @@ const Nav = ({
         role="presentation"
         aria-hidden="true"
         className={`fixed z-10 h-screen w-screen bg-black opacity-75 ${open ? 'block' : 'hidden'} left-0 top-0`}
-        onClick={onClose}
+        onClick={closeNav}
       />
-    </>
-  );
-};
-
-export default function OffCanvasNav({ profileLink }: { profileLink: string }) {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  const closeButton = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  return (
-    <>
-      <button className="mr-auto text-gray-500" onClick={() => setOpen(true)}>
-        <SquareMenu className="size-10" />
-      </button>
-      <Nav profileLink={profileLink} open={open} onClose={closeButton} />
     </>
   );
 }

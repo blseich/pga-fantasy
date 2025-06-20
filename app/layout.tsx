@@ -1,13 +1,8 @@
-import { User2 } from 'lucide-react';
 import { Geist } from 'next/font/google';
-import Link from 'next/link';
 import './globals.css';
 
-import { createClient } from '@/utils/supabase/server';
-
-import OffCanvasNav from './_components/off-canvas-nav';
 import { signOutAction } from './actions';
-import LogoSvg from './logo.svg';
+import { Nav, HomeIconLink, ProfileIconLink } from '@/features/navigation';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -29,33 +24,15 @@ export default async function BaseLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user: currentUser },
-  } = await supabase.auth.getUser();
-  const { data } = await supabase
-    .from('profiles')
-    .select('public_id')
-    .eq('user_id', currentUser?.id || '');
-  const profileId = data?.[0].public_id;
-
   return (
     <html lang="en" className={geistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <main className="min-h-screen">
           <nav className="w-full border-b border-b-foreground/10">
             <div className="mx-auto  flex max-w-screen-md items-center justify-center px-4 py-2">
-              <OffCanvasNav profileLink={`/user/${profileId}`} />
-              <Link className="flex items-center gap-1" href="/">
-                <LogoSvg />
-                <div className="flex flex-col items-end">
-                  <p className="text-lg font-black text-brand-green">PGA</p>
-                  <p className="text-xs">Pick&apos;Em</p>
-                </div>
-              </Link>
-              <Link className="ml-auto" href={`/user/${profileId}`}>
-                <User2 className="size-10 rounded-full border-[3px] border-gray-500 text-gray-500" />
-              </Link>
+              <Nav />
+              <HomeIconLink />
+              <ProfileIconLink />
             </div>
           </nav>
           <div className="mx-auto max-w-screen-md">{children}</div>
