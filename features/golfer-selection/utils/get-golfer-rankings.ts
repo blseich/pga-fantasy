@@ -1,6 +1,7 @@
 import path from 'path';
 
 import csv from 'csvtojson';
+import { DataGolferRank } from '../types/data-golf-ranking';
 
 const rankingsPath = path.join(
   process.cwd(),
@@ -8,16 +9,6 @@ const rankingsPath = path.join(
 );
 
 let cachedData: any = null;
-
-type DataGolferRank = {
-  player_name: string;
-  primary_tour: string;
-  dg_rank: string;
-  dg_change: string;
-  owgr_rank: string;
-  owgr_change: string;
-  dg_index: string;
-};
 
 export async function getGolferRanks(
   bucket: string = 'all',

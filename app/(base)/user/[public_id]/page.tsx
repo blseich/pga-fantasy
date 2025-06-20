@@ -3,7 +3,7 @@ import { UserCircle2 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 
 import './user.css';
-import Headline from '@/app/(base)/_components/headline';
+import Headline from '@/components/headline';
 import RosterView from '@/features/roster-view';
 import TiebreakerView from '@/features/tiebreaker-view';
 
@@ -26,7 +26,6 @@ export default async function UserPage({
         title={`${user?.first_name} ${user?.last_name}`}
         Icon={UserCircle2}
       />
-      <h1 className="mb-4 mt-8 text-center text-2xl font-black">Tiebreaker</h1>
       <TiebreakerView public_id={public_id} />
       <RosterView public_id={public_id} />
     </>

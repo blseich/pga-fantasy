@@ -1,4 +1,4 @@
-import { getGolferRanks } from '@/lib/get-golfer-ranks';
+import { getGolferRanks } from '@/features/golfer-selection/utils/get-golfer-rankings';
 import { getTournament } from '@/lib/pga-endpoints/get-pga-endpoints';
 import { createClient } from '@/utils/supabase/server';
 import { type PickMap } from '../types/pick-map';

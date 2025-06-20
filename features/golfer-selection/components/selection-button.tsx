@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-import BallSVG from '../../../../../../ball.svg';
-import ClubSVG from '../../../../../../club.svg';
+import BallSVG from '@/ball.svg';
+import ClubSVG from '@/club.svg';
 
 const postPick = async (golfer_id: string, bucket: string, rank: string) => {
   const res = await fetch('/pick', {
@@ -15,7 +15,7 @@ const postPick = async (golfer_id: string, bucket: string, rank: string) => {
   return success;
 };
 
-export const PickButton = ({
+export default function SelectionButton({
   golfer_id,
   bucket,
   rank,
@@ -25,7 +25,7 @@ export const PickButton = ({
   bucket: string;
   rank: string;
   redirectHref: string;
-}) => {
+}) {
   const [loading, setLoading] = useState(false);
 
   const pickChangeAction = useCallback(async () => {
@@ -55,4 +55,4 @@ export const PickButton = ({
       )}
     </>
   );
-};
+}
