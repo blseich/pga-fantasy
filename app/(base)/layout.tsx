@@ -3,15 +3,21 @@ import '../globals.css';
 
 import { signOutAction } from './actions';
 import { Nav, HomeIconLink, ProfileIconLink } from '@/features/navigation';
+import { Metadata } from 'next';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : 'http://localhost:3000';
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   title: "PGA Pick'Em",
   description: 'Pick Golfers. Watch Golf. Lose Money to Friends.',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
+    shortcut: '/favicon.ico',
+  },
 };
 
 const geistSans = Geist({
