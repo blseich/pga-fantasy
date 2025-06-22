@@ -10,7 +10,7 @@ export default async function TiebreakerView({
 }) {
   const tiebreakerScore = await getCurrentTiebreakerValue(public_id);
   const tournament = await getTournament();
-  console.log(tournament.tournamentStatus);
+
   return (
     <>
       <h1 className="mb-4 mt-8 text-center text-2xl font-black">Tiebreaker</h1>

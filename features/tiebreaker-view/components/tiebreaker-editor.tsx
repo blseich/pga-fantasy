@@ -9,7 +9,7 @@ export default function TiebreakerEditor({
 }: {
   initScore?: number;
 }) {
-  const [score, incrementScore, decrementScore] =
+  const { score, incrementScore, decrementScore } =
     useTiebreakerControls(initScore);
 
   return (

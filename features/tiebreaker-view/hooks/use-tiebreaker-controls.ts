@@ -1,9 +1,15 @@
 import { useCallback, useState } from 'react';
 import postTiebreakerChange from '../api/post-tiebreaker-change';
 
+type TiebreakerControls = {
+  score: number | undefined;
+  decrementScore: () => void;
+  incrementScore: () => void;
+};
+
 export default function useTimebreakerControls(
   initScore?: number,
-): [number | undefined, () => void, () => void] {
+): TiebreakerControls {
   const [score, setScore] = useState(initScore);
 
   const decrementScore = useCallback(() => {
@@ -18,5 +24,5 @@ export default function useTimebreakerControls(
     setScore(newScore);
   }, [score, setScore]);
 
-  return [score, decrementScore, incrementScore];
+  return { score, decrementScore, incrementScore };
 }
