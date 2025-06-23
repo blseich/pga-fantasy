@@ -53,7 +53,7 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
-const variables = { ids: ['R2025034'], fieldId: 'R2025034' };
+const variables = { ids: ['R2025524'], fieldId: 'R2025524' };
 
 const getPGAData = async function () {
   const res = await fetch('https://orchestrator.pgatour.com/graphql', {

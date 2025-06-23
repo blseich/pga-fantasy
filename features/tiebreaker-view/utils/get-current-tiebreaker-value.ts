@@ -10,5 +10,5 @@ export default async function getCurrentTiebreakerValue(public_id: string) {
     .eq('public_id', public_id)
     .filter('tiebreakers.tournament_id', 'eq', tournament.id)
     .single();
-  return data?.tiebreakers[0].tiebreaker_score;
+  return data?.tiebreakers[0]?.tiebreaker_score;
 }
