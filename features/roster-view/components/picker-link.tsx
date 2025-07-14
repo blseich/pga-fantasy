@@ -11,7 +11,7 @@ export default async function PickerLink({
 }) {
   return (
     <Link
-      href={`${await getProfileLink()}/pick?bucket=${bucket}`}
+      href={`${await getProfileLink()}/picker?bucket=${encodeURIComponent(bucket)}`}
       className="mx-auto rounded-lg bg-brand-green px-4 py-2 text-black"
     >
       {swap ? <ArrowRightLeft className="inline" /> : <Plus />}

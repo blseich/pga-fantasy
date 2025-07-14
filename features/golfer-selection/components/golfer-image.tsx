@@ -15,7 +15,7 @@ export default function GolferImage({
 }) {
   const [error, setError] = useState(false);
   return (
-    <div className="flex aspect-square w-[75px] flex-col items-center justify-end overflow-hidden rounded-full bg-brand-blue">
+    <div className="flex aspect-square w-[75px] flex-col items-center justify-end overflow-hidden rounded-full bg-brand-blue [&>svg]:size-full">
       {error ? (
         <User />
       ) : (

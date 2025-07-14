@@ -13,6 +13,7 @@ let cachedData: any = null;
 export async function getGolferRanks(
   bucket: string = 'all',
 ): Promise<DataGolferRank[]> {
+  console.log(cachedData);
   if (cachedData) {
     return cachedData[bucket];
   }
