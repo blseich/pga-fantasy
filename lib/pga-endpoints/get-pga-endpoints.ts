@@ -95,15 +95,21 @@ export async function getLeaderboard(): Promise<Leaderboard['players']> {
   const {
     leaderboard: { players },
   } = await getPGAData();
-  const moddedPlayers = players.map((player: any) => ({
-    ...player,
-    scoringData: {
-      ...player.scoringData,
-      teeTime:
-        player.scoringData.teeTime === null
-          ? null
-          : formatTeeTime(player.scoringData.teeTime),
-    },
-  }));
+
+  const moddedPlayers = players
+    .filter((player: any) => typeof player.scoringData !== 'undefined')
+    .map((player: any) => {
+      console.log(player);
+      return {
+        ...player,
+        scoringData: {
+          ...player.scoringData,
+          teeTime:
+            player.scoringData.teeTime === null
+              ? null
+              : formatTeeTime(player.scoringData.teeTime),
+        },
+      };
+    });
   return moddedPlayers;
 }
