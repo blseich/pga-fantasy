@@ -90,7 +90,11 @@ const buildUserPicks = (
 const compileScore = (userPicks: ReturnType<typeof buildUserPicks>) => {
   const accumulatedScore = userPicks
     .slice(0, 3)
-    .map((pick) => pick.score.overall.value)
+    .map((pick) =>
+      pick.score.overall.value < Number.POSITIVE_INFINITY
+        ? pick.score.overall.value
+        : 0,
+    )
     .reduce((acc, score) => (acc += score), 0);
   return {
     value: accumulatedScore,
@@ -110,7 +114,7 @@ export default async function generateRankings(): Promise<
   const { data: users } = await supabase
     .from('profiles')
     .select(
-      'user_id, first_name, last_name, public_id, picks:picks (*), tiebreakers:tiebreakers (tiebreaker_score)',
+      'user_id, first_name, last_name, public_id, picks:picks!inner (*), tiebreakers:tiebreakers (tiebreaker_score)',
     )
     .filter('picks.tournament_id', 'eq', tournament.id)
     .filter('tiebreakers.tournament_id', 'eq', tournament.id);

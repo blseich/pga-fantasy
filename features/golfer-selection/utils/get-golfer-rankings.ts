@@ -5,7 +5,7 @@ import { DataGolferRank } from '../types/data-golf-ranking';
 
 const rankingsPath = path.join(
   process.cwd(),
-  'data/datagolf_rankings_current.csv',
+  'data/datagolf_rankings_RBC_Canadian.csv',
 );
 
 let cachedData: any = null;
