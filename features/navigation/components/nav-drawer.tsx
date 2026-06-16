@@ -13,7 +13,7 @@ export default function NavDrawer() {
   return (
     <>
       <div
-        className={`fixed top-0 z-20 h-screen w-11/12 border-r-8 border-r-brand-green bg-black text-white ${open ? 'left-0' : '-left-full'} transition-all duration-300 ease-in-out`}
+        className={`fixed top-0 z-20 h-screen w-11/12 border-r-8 border-r-brand-green bg-background text-foreground ${open ? 'left-0' : '-left-full'} transition-all duration-300 ease-in-out`}
       >
         <div className="flex w-full justify-end p-4">
           <button className="size-12 text-brand-green" onClick={closeNav}>
@@ -70,7 +70,7 @@ export default function NavDrawer() {
       <div
         role="presentation"
         aria-hidden="true"
-        className={`fixed z-10 h-screen w-screen bg-black opacity-75 ${open ? 'block' : 'hidden'} left-0 top-0`}
+        className={`fixed z-10 h-screen w-screen bg-black ${open ? 'opacity-75 left-0' : '-left-full opacity-0'} top-0 transition-opacity duration-300`}
         onClick={closeNav}
       />
     </>

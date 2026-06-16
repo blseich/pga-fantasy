@@ -22,7 +22,7 @@ export default function RankingControls({
   const findMe = useFindMe(myRankRef);
 
   return (
-    <div className="sticky bottom-0 z-10 w-full border-b-2 border-gray-500 bg-black">
+    <div className="sticky bottom-0 z-10 w-full border-b-2 border-gray-500 bg-background">
       <div className="flex items-center justify-center gap-16 py-4">
         <button className="flex flex-col items-center" onClick={expandAll}>
           <CopyPlus />

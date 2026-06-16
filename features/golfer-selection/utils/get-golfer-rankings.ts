@@ -5,7 +5,7 @@ import { DataGolferRank } from '../types/data-golf-ranking';
 
 const rankingsPath = path.join(
   process.cwd(),
-  'data/datagolf_rankings_RBC_Canadian.csv',
+  'data/datagolf_rankings_US_Open.csv',
 );
 
 let cachedData: any = null;
@@ -13,7 +13,6 @@ let cachedData: any = null;
 export async function getGolferRanks(
   bucket: string = 'all',
 ): Promise<DataGolferRank[]> {
-  console.log(cachedData);
   if (cachedData) {
     return cachedData[bucket];
   }

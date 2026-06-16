@@ -53,7 +53,7 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
-const variables = { ids: ['R2026032'], fieldId: 'R2026032' };
+const variables = { ids: ['R2026026'], fieldId: 'R2026026' };
 
 const getPGAData = async function () {
   const res = await fetch('https://orchestrator.pgatour.com/graphql', {
@@ -99,7 +99,6 @@ export async function getLeaderboard(): Promise<Leaderboard['players']> {
   const moddedPlayers = players
     .filter((player: any) => typeof player.scoringData !== 'undefined')
     .map((player: any) => {
-      console.log(player);
       return {
         ...player,
         scoringData: {

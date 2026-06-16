@@ -23,7 +23,7 @@ export default function Ranking({
     >
       {Heading}
       <div
-        className={`${isOpen ? 'max-h-80' : 'max-h-0'} overflow-hidden bg-black transition-all duration-500 ease-out`}
+        className={`${isOpen ? 'max-h-80' : 'max-h-0'} overflow-hidden bg-background transition-all duration-500 ease-out`}
       >
         {Rest}
       </div>
