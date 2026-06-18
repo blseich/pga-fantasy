@@ -1,21 +1,48 @@
 'use client';
+import { RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function ErrorPage() {
+import ErrorReportButton from '@/components/error-report-button';
+import { Button } from '@/components/ui/button';
+
+type ErrorPageProps = {
+  error: Error & { digest?: string };
+  reset: () => void;
+};
+
+const getReportMessage = (error: ErrorPageProps['error']) =>
+  [
+    'Route error boundary rendered.',
+    `Message: ${error.message || 'Unknown error'}`,
+    error.digest ? `Digest: ${error.digest}` : null,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
+  const reportMessage = getReportMessage(error);
+
   return (
     <div className="mt-8 flex flex-col items-center gap-8">
       <h1 className="text-4xl font-black">WHOOPS!</h1>
       <Image src="/error-graphic.png" alt="Fore!" height={212} width={206} />
       <h2 className="text-xl">Something went wrong...</h2>
-      <p className="px-4 text-center">
-        Try refreshing or returning to the{' '}
-        <Link className="text-brand-blue underline underline-offset-4" href="/">
-          homepage
-        </Link>
-        . If the problem persists please let Seich know and give steps to
-        reproduce the problem.
-      </p>
+      <div className="grid w-full max-w-sm gap-3 px-4">
+        <Button onClick={reset} type="button">
+          <RefreshCw className="mr-2 size-4" />
+          Try again
+        </Button>
+        <ErrorReportButton message={reportMessage} />
+      </div>
+      {error.message && (
+        <div className="mx-4 w-full max-w-sm rounded-md border border-destructive/60 p-4 text-sm">
+          <p className="font-semibold">Error details</p>
+          <p className="mt-2 break-words text-destructive-foreground">
+            {error.message}
+          </p>
+        </div>
+      )}
       <p>Thanks!</p>
     </div>
   );
