@@ -32,7 +32,7 @@ export default function ClientErrorPopup({
           <h2 className="text-lg font-semibold">Something went wrong</h2>
           <p className="text-sm text-destructive-foreground">{message}</p>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-rows-2 gap-2">
           <Button onClick={onRefresh} type="button">
             <RefreshCw className="mr-2 size-4" />
             Try again
