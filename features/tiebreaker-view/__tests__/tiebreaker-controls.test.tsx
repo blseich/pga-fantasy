@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@/testing/test-utils';
+import { act, render, fireEvent, screen } from '@/testing/test-utils';
 import TiebreakerEditor from '../components/tiebreaker-editor';
 
 const renderTiebreaker = (initScore: number | undefined) => {
@@ -29,7 +29,8 @@ const expectPostTiebreakerCalledOnceWith = (value: number) => {
 beforeEach(() => {
   global.fetch = vi.fn(() =>
     Promise.resolve({
-      json: () => Promise.resolve({ data: 'mocked response' }),
+      ok: true,
+      json: () => Promise.resolve({ success: true }),
     } as Response),
   );
   vi.useFakeTimers();
@@ -95,6 +96,33 @@ describe('GIVEN: tie breaker has value of E', () => {
       expectPostTiebreakerCalledOnceWith(-4);
     });
   });
+});
+
+test('shows an error popup when saving the tiebreaker fails', async () => {
+  global.fetch = vi.fn(() =>
+    Promise.resolve({
+      ok: false,
+      json: () =>
+        Promise.resolve({
+          success: false,
+          error: { message: 'Tiebreakers are locked for this tournament.' },
+        }),
+    } as Response),
+  );
+
+  const { incrementButton } = renderTiebreaker(0);
+  fireEvent.click(incrementButton);
+  await act(async () => {
+    await vi.runAllTimersAsync();
+  });
+
+  expect(
+    screen.getByText('Tiebreakers are locked for this tournament.'),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('button', { name: /try again/i }),
+  ).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /report/i })).toBeInTheDocument();
 });
 
 afterEach(() => {

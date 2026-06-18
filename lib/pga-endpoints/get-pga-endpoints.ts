@@ -55,6 +55,26 @@ fragment TournamentFragment on Tournament {
 
 const variables = { ids: ['R2026026'], fieldId: 'R2026026' };
 
+export class PGADataError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly status?: number,
+  ) {
+    super(message);
+    this.name = 'PGADataError';
+  }
+}
+
+type PGAResponse = {
+  data?: {
+    tournaments?: Tournament[];
+    field?: Field;
+    leaderboard?: Leaderboard;
+  };
+  errors?: { message?: string }[];
+};
+
 const getPGAData = async function () {
   const res = await fetch('https://orchestrator.pgatour.com/graphql', {
     method: 'POST',
@@ -65,23 +85,71 @@ const getPGAData = async function () {
       Referrer: 'https://www.pgatour.com/',
     },
   });
-  const { data } = await res.json();
-  return data;
+
+  if (!res.ok) {
+    throw new PGADataError(
+      'PGA Tour data is currently unavailable.',
+      'PGA_HTTP_ERROR',
+      res.status,
+    );
+  }
+
+  let payload: PGAResponse;
+  try {
+    payload = await res.json();
+  } catch {
+    throw new PGADataError(
+      'PGA Tour returned an unreadable response.',
+      'PGA_INVALID_JSON',
+      res.status,
+    );
+  }
+
+  if (payload.errors?.length) {
+    throw new PGADataError(
+      payload.errors[0]?.message || 'PGA Tour returned a data error.',
+      'PGA_GRAPHQL_ERROR',
+      res.status,
+    );
+  }
+
+  if (!payload.data) {
+    throw new PGADataError(
+      'PGA Tour response did not include data.',
+      'PGA_MISSING_DATA',
+      res.status,
+    );
+  }
+
+  return payload.data;
 };
 
 export async function getTournament(): Promise<Tournament> {
-  const {
-    tournaments: [tournament],
-  } = await getPGAData();
+  const { tournaments } = await getPGAData();
+  const tournament = tournaments?.[0];
+
+  if (!tournament) {
+    throw new PGADataError(
+      'PGA Tour response did not include tournament data.',
+      'PGA_MISSING_TOURNAMENT',
+    );
+  }
+
   // tournament.tournamentStatus = 'NOT_STARTED';
   return tournament;
 }
 
 export async function getField(): Promise<Field['players']> {
-  const {
-    field: { players },
-  } = await getPGAData();
-  return players;
+  const { field } = await getPGAData();
+
+  if (!Array.isArray(field?.players)) {
+    throw new PGADataError(
+      'PGA Tour response did not include field data.',
+      'PGA_MISSING_FIELD',
+    );
+  }
+
+  return field.players;
 }
 
 const formatTeeTime = (teeTime: number) =>
@@ -92,11 +160,16 @@ const formatTeeTime = (teeTime: number) =>
   }).format(teeTime);
 
 export async function getLeaderboard(): Promise<Leaderboard['players']> {
-  const {
-    leaderboard: { players },
-  } = await getPGAData();
+  const { leaderboard } = await getPGAData();
 
-  const moddedPlayers = players
+  if (!Array.isArray(leaderboard?.players)) {
+    throw new PGADataError(
+      'PGA Tour response did not include leaderboard data.',
+      'PGA_MISSING_LEADERBOARD',
+    );
+  }
+
+  const moddedPlayers = leaderboard.players
     .filter((player: any) => typeof player.scoringData !== 'undefined')
     .map((player: any) => {
       return {
