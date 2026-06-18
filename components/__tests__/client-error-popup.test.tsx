@@ -76,3 +76,31 @@ test('shows fallback instructions when automated reporting fails', async () => {
   ).toBeInTheDocument();
   expect(screen.getByText(/errors@example.com/)).toBeInTheDocument();
 });
+
+test('shows a rate-limit message when the report endpoint throttles the request', async () => {
+  global.fetch = vi.fn(() =>
+    Promise.resolve({
+      ok: false,
+      json: () =>
+        Promise.resolve({
+          success: false,
+          error: { code: 'ERROR_REPORT_RATE_LIMITED' },
+        }),
+    } as Response),
+  );
+
+  render(
+    <ClientErrorPopup
+      message="Unable to save right now."
+      reportEmail="errors@example.com"
+    />,
+  );
+
+  fireEvent.click(screen.getByRole('button', { name: /report/i }));
+
+  expect(
+    await screen.findByText(
+      'Please wait a minute before sending another automated report.',
+    ),
+  ).toBeInTheDocument();
+});
