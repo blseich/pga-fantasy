@@ -1,7 +1,6 @@
 'use client';
 import { RefreshCw } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import ErrorReportButton from '@/components/error-report-button';
 import { Button } from '@/components/ui/button';
