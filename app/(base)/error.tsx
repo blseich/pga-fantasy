@@ -34,15 +34,6 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
         </Button>
         <ErrorReportButton message={reportMessage} />
       </div>
-      {error.message && (
-        <div className="mx-4 w-full max-w-sm rounded-md border border-destructive/60 p-4 text-sm">
-          <p className="font-semibold">Error details</p>
-          <p className="mt-2 break-words text-destructive-foreground">
-            {error.message}
-          </p>
-        </div>
-      )}
-      <p>Thanks!</p>
     </div>
   );
 }
