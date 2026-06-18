@@ -1,0 +1,123 @@
+# AGENTS.md
+
+## Working Agreements
+
+- Always run `npm test` after modifying JavaScript or TypeScript files.
+- Ask for confirmation before adding new production dependencies.
+- Prefer `rg`/`rg --files` for code searches.
+- Do not overwrite user changes in a dirty worktree.
+
+## Project Overview
+
+This is a Next.js 15 App Router app for a PGA pick'em game. Authenticated users pick golfers from ranking buckets before a tournament starts, set a tiebreaker score, and later compare rosters and rankings against the live PGA leaderboard.
+
+The repository still has a mostly upstream Supabase starter `README.md`, so source code is the most reliable documentation.
+
+## Stack
+
+- Next.js App Router with React 19 and TypeScript.
+- Supabase Auth and database access through `@supabase/ssr`.
+- Tailwind CSS 3 with shadcn-style primitives in `components/ui`.
+- Lucide React icons.
+- Vitest, jsdom, and Testing Library for tests.
+- CSV golfer rankings read with `csvtojson`.
+
+## Commands
+
+- `npm run dev` starts the local Next.js dev server.
+- `npm run build` builds the app.
+- `npm run lint` runs ESLint.
+- `npm test` runs Vitest with the dot reporter.
+- `npm run format` runs Prettier across the repo.
+
+## Environment
+
+The app expects Supabase environment variables:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Server and middleware Supabase clients use these values with non-null assertions, so missing env vars generally fail at runtime.
+
+## Deployment
+
+- The deployment target is Vercel.
+- There are no additional known build/runtime environment expectations beyond the app environment variables documented above.
+
+## Application Structure
+
+- `app/(base)` contains authenticated app routes and the main layout.
+- `app/(auth)` contains sign-in, sign-up, forgot password, reset password, and auth layout routes.
+- `app/(api)` contains route handlers for client-side mutations:
+  - `/pick` upserts a user's golfer pick.
+  - `/tiebreaker` upserts a user's tiebreaker score.
+- `features/*` contains feature-first modules. Most features follow `components`, `utils`, `hooks`, `types`, and an `index.ts` export.
+- `utils/supabase` contains browser, server, middleware clients, and generated database types.
+- `lib/pga-endpoints` wraps the PGA Tour GraphQL endpoint and related types.
+- `data/*.csv` contains DataGolf ranking snapshots. The active ranking file is currently hard-coded in `features/golfer-selection/utils/get-golfer-rankings.ts`.
+- `testing` contains shared Vitest setup and Testing Library re-exports.
+
+## Feature Notes
+
+- Home route (`app/(base)/page.tsx`) loads the current tournament and shows `Countdown` before the tournament starts, otherwise `Rankings`.
+- Picks and tiebreakers are only accepted while `tournament.tournamentStatus === 'NOT_STARTED'`.
+- Rankings are generated in `features/rankings/utils/generate-rankings.tsx` by combining Supabase profiles/picks/tiebreakers with live PGA leaderboard data.
+- User roster pages use `public_id` paths and resolve current tournament picks through Supabase.
+- Golfer selection combines DataGolf CSV rankings with the current PGA field by matching first and last names.
+- The tiebreaker editor posts through a debounced client helper in `features/tiebreaker-view/api/post-tiebreaker-change.ts`.
+
+## Game Rules
+
+- Each user makes 4 golfer picks, one from each ranking bucket.
+- The user's score is the aggregate score to par for the best 3 scoring golfers out of their 4 picks. Top 3 of 4 is intentional.
+- If a golfer misses the cut, their score is locked and still counts toward the aggregate if it is one of the user's best 3 applicable scores.
+- The tiebreaker is the user's guess at the champion's winning score for the tournament.
+
+## Data Sources
+
+- PGA tournament, field, and leaderboard data come from `https://orchestrator.pgatour.com/graphql` via `lib/pga-endpoints/get-pga-endpoints.ts`.
+- The tournament id and field id are currently hard-coded as `R2026026`.
+- Tournament rollover is manual for now. Update the hard-coded PGA tournament/field id and the active DataGolf CSV path when moving to a new tournament.
+- The current PGA endpoint/API key usage and manual data refresh approach are acceptable for now, but are good candidates for future improvement.
+- Golfer buckets are derived from the active CSV:
+  - `1-10`
+  - `11-20`
+  - `21-40`
+  - `41+`
+  - `all`
+
+## Supabase Patterns
+
+- Use `utils/supabase/server.ts` inside Server Components, route handlers, and server actions.
+- Use `utils/supabase/client.ts` only in browser/client contexts.
+- Middleware in `middleware.ts` delegates to `utils/supabase/middleware.ts` to refresh sessions and protect routes.
+- Auth pages are redirected away from when a user is already authenticated; protected routes redirect unauthenticated users to `/sign-in`.
+- Database table types come from `utils/supabase/database.types.ts`; prefer those types when shaping Supabase results.
+- The database schema/types file was copied directly from Supabase, not generated by an in-repo command.
+
+## Coding Conventions
+
+- TypeScript is strict, with the path alias `@/*` mapped to the repo root.
+- File names for `.ts` and `.tsx` are expected to be kebab-case by ESLint.
+- Prettier settings: single quotes, trailing commas, 80 character print width, 2 spaces.
+- Prefer feature-local utilities and components over broad shared abstractions.
+- Components are Server Components by default. Add `'use client'` only when using state, effects, browser APIs, or event handlers.
+- Use `cn` from `lib/utils.ts` for conditional Tailwind class merging.
+- Keep mutation endpoints small and preserve the tournament-status guard unless intentionally changing game rules.
+- Use lucide icons where an icon is needed; existing UI primitives live in `components/ui`.
+
+## Testing Practices
+
+- Tests use Vitest globals and `@testing-library/jest-dom/vitest`.
+- Shared render utilities are re-exported from `testing/test-utils.ts`.
+- Feature tests live near the feature, for example `features/tiebreaker-view/__tests__`.
+- Existing tests mock `global.fetch` directly and use fake timers for debounced behavior.
+- After changing JavaScript or TypeScript files, run `npm test`.
+
+## Known Caveats
+
+- The README does not describe this app; it mostly documents the original Next.js/Supabase starter.
+- The PGA API key, tournament id, and active DataGolf CSV are hard-coded. The tournament id and active CSV are expected to be changed manually until a rollover workflow exists.
+- Data refresh is intentionally simple right now; consider exploring a more robust refresh/configuration workflow later.
+- Several calculations parse PGA score strings; be careful with `E`, `-`, `CUT`, `WD`, and tee-time states.
+- Supabase query shapes can be nested and loosely inferred. Check `types/db-fetched-types.ts` and `database.types.ts` before changing returned data structures, and refresh copied schema types from Supabase when the database changes.
