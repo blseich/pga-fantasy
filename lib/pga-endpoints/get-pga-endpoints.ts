@@ -53,7 +53,7 @@ fragment TournamentFragment on Tournament {
   }
 }`;
 
-const variables = { ids: ['R2026026'], fieldId: 'R2026026' };
+const variables = { ids: ['R2026100'], fieldId: 'R2026100' };
 
 export class PGADataError extends Error {
   constructor(
