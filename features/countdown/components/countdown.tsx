@@ -7,7 +7,7 @@ import getTargetDate from '../utils/target-date';
 
 export default async function Countdown() {
   return (
-    <div className="grid place-items-center my-8">
+    <div className="my-8 grid place-items-center">
       <Ticker targetDate={await getTargetDate()} />
       <Link
         className="pick-link flex w-10/12 items-center justify-center gap-2 rounded-lg bg-brand-green p-4 text-black"

@@ -70,7 +70,7 @@ export default function NavDrawer() {
       <div
         role="presentation"
         aria-hidden="true"
-        className={`fixed z-10 h-screen w-screen bg-black ${open ? 'opacity-75 left-0' : '-left-full opacity-0'} top-0 transition-opacity duration-300`}
+        className={`fixed z-10 h-screen w-screen bg-black ${open ? 'left-0 opacity-75' : '-left-full opacity-0'} top-0 transition-opacity duration-300`}
         onClick={closeNav}
       />
     </>

@@ -23,7 +23,9 @@ test('sends a route error report with hidden error details', async () => {
 
   render(<ErrorPage error={error} reset={reset} />);
 
-  expect(screen.queryByText('PGA data is unavailable.')).not.toBeInTheDocument();
+  expect(
+    screen.queryByText('PGA data is unavailable.'),
+  ).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole('button', { name: /try again/i }));
   expect(reset).toHaveBeenCalledOnce();
