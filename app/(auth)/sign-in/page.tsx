@@ -3,10 +3,22 @@ import Link from 'next/link';
 import { signInAction } from '@/app/(base)/actions';
 
 import GolfBallSvg from './53678130-golf-ball-on-tee.svg';
+import LoginErrorNotification from './login-error-notification';
 
-export default async function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<{
+    error?: string;
+  }>;
+};
+
+export default async function LoginPage(props: LoginPageProps) {
+  const searchParams = await props.searchParams;
+
   return (
     <div className="relative w-full max-w-screen-sm p-8">
+      {searchParams.error && (
+        <LoginErrorNotification message={searchParams.error} />
+      )}
       <GolfBallSvg
         className="mx-auto mt-8 h-auto w-5/6 [&>path]:w-full"
         viewBox="0 0 185 295"
