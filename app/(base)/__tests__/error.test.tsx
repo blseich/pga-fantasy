@@ -14,7 +14,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-test('shows error details and sends a route error report', async () => {
+test('sends a route error report with hidden error details', async () => {
   const reset = vi.fn();
   const error = new Error('PGA data is unavailable.') as Error & {
     digest?: string;
@@ -23,7 +23,7 @@ test('shows error details and sends a route error report', async () => {
 
   render(<ErrorPage error={error} reset={reset} />);
 
-  expect(screen.getByText('PGA data is unavailable.')).toBeInTheDocument();
+  expect(screen.queryByText('PGA data is unavailable.')).not.toBeInTheDocument();
 
   fireEvent.click(screen.getByRole('button', { name: /try again/i }));
   expect(reset).toHaveBeenCalledOnce();
